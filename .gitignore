@@ -1,0 +1,41 @@
+# Archivos de configuración de usuario de Visual Studio Code
+.vscode/
+
+# Archivos temporales y de respaldo
+*.suo
+*.backup
+*.user
+*.dbmdl
+*.psess
+*.orig
+*.~vsd
+*.zip
+*.log
+*.db
+
+# Archivos y directorios generados por herramientas de desarrollo
+**/bin/
+**/obj/
+**/Publish/
+
+# Directorios de dependencias
+**/packages/
+**/node_modules/
+**/bower_components/
+
+# Archivos de resultados de pruebas de rendimiento
+*/Performance/*TestResults.txt
+
+# Otros archivos y directorios a ignorar
+*.exe
+*.avi
+*.mp4
+*.mov
+*.rar
+**/*.log.1
+**/*.log.*
+.vs/
+*.mdf
+*.ldf
+*.pptx
+*.xml
