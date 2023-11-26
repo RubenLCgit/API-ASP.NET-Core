@@ -64,16 +64,11 @@ public class OptionMenu
 
   public static void EmuleLoad()
   {
-    Thread.Sleep(1000);
-    Console.Write(".");
-    Thread.Sleep(1000);
-    Console.Write(".");
-    Thread.Sleep(1000);
-    Console.Write(".");
-    Thread.Sleep(1000);
-    Console.Write(".");
-    Thread.Sleep(1000);
-    Console.Write(".");
+    for (int i = 0; i < 4; i++)
+    {
+      Thread.Sleep(1000);
+      Console.Write(".");
+    }
   }
 
 }
