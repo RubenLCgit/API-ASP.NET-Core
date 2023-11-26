@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetPalApp.Domain", "PetPalA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetPalApp.Data", "PetPalApp.Data\PetPalApp.Data.csproj", "{713EA8F2-9B71-4BAB-82C7-8A4026F2861A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetPalApp.Business", "PetPalApp.Business\PetPalApp.Business.csproj", "{DEE5E35D-60CF-4E5D-848A-9FE5FEEB4576}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{713EA8F2-9B71-4BAB-82C7-8A4026F2861A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{713EA8F2-9B71-4BAB-82C7-8A4026F2861A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{713EA8F2-9B71-4BAB-82C7-8A4026F2861A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEE5E35D-60CF-4E5D-848A-9FE5FEEB4576}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEE5E35D-60CF-4E5D-848A-9FE5FEEB4576}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEE5E35D-60CF-4E5D-848A-9FE5FEEB4576}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEE5E35D-60CF-4E5D-848A-9FE5FEEB4576}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
