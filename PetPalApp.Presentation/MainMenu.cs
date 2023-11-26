@@ -29,7 +29,9 @@ public class MainMenu
 
   public static void ShowOptions()
   {
+    #if !DEBUG
     Console.Clear();
+    #endif
     bool login = false;
     Console.WriteLine("\t\t1. Sign up");
     Console.WriteLine("\t\t2. Sign in");

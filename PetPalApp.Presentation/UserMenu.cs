@@ -4,7 +4,9 @@ public class UserMenu
 {
   public static void DisplayUserMenu()
   {
+    #if !DEBUG
     Console.Clear();
+    #endif
     bool login = true;//TODO:Correct login emulation
     Console.WriteLine(@"
     1. Services
