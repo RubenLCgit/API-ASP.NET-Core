@@ -9,11 +9,20 @@ public class UserRepository : IRepositoryGeneric<User>
 
   public Dictionary<string, User> EntityDictionary = new Dictionary<string, User>();
 
-  private readonly string _filePath = "bankAccounts.json";
+  private readonly string _filePath = "UsersRepository.json";
+  private readonly string _folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"UserRepository","UsersRepository.json");
 
-  public Task AddEntity(User entity)
+  public async Task AddEntity(User entity)
   {
-    throw new NotImplementedException();
+    try
+    {
+      EntityDictionary.Add(entity.UserName, entity);
+      await SaveChanges();
+    }
+    catch (Exception ex)
+    {
+      throw new Exception("No se ha podido realizar el registro", ex);
+    }
   }
 
   public Task DeleteEntity(User entity)
@@ -31,9 +40,15 @@ public class UserRepository : IRepositoryGeneric<User>
     throw new NotImplementedException();
   }
 
-  public Task SaveChanges()
+  public async Task SaveChanges()
   {
-    throw new NotImplementedException();
+    if (!Directory.Exists(_folderPath))
+    {
+      Directory.CreateDirectory(_folderPath);
+    }
+    var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
+    string jsonString = JsonSerializer.Serialize(EntityDictionary, serializeOptions);
+    File.WriteAllText(_filePath, jsonString);
   }
 
   public Task UpdateEntity(User entity)
