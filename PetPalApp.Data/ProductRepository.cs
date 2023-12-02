@@ -5,32 +5,32 @@ namespace PetPalApp.Data;
 
 public class ProductRepository : IRepositoryGeneric<Product>
 {
-  public Task AddEntity(Product entity)
+  public void AddEntity(Product entity)
   {
     throw new NotImplementedException();
   }
 
-  public Task DeleteEntity(Product entity)
+  public void DeleteEntity(Product entity)
   {
     throw new NotImplementedException();
   }
 
-  public Task<IEnumerable<Product>> GetAllEntities()
+  public Dictionary<string, Product> GetAllEntities()
   {
     throw new NotImplementedException();
   }
 
-  public Task<Product> GetByIDEntity(int id)
+  public Product GetByIDEntity(int id)
   {
     throw new NotImplementedException();
   }
 
-  public Task SaveChanges()
+  public void SaveChanges()
   {
     throw new NotImplementedException();
   }
 
-  public Task UpdateEntity(Product entity)
+  public void UpdateEntity(Product entity)
   {
     throw new NotImplementedException();
   }

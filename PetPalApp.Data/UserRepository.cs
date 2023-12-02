@@ -1,5 +1,4 @@
 using System.Text.Json;
-using PetPalApp.Data;
 using PetPalApp.Domain;
 
 namespace PetPalApp.Data;
@@ -8,16 +7,20 @@ public class UserRepository : IRepositoryGeneric<User>
 {
 
   public Dictionary<string, User> EntityDictionary = new Dictionary<string, User>();
+  private readonly string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserRepository", "UsersRepository.json");
 
-  private readonly string _filePath = "UsersRepository.json";
-  private readonly string _folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"UserRepository","UsersRepository.json");
-
-  public async Task AddEntity(User entity)
+  public void AddEntity(User entity)
   {
+    Dictionary<String, User> listUsers;
     try
     {
+      if (File.Exists(_filePath))
+      {
+        listUsers = GetAllEntities();
+        EntityDictionary = listUsers;
+      }
       EntityDictionary.Add(entity.UserName, entity);
-      await SaveChanges();
+      SaveChanges();
     }
     catch (Exception ex)
     {
@@ -25,34 +28,46 @@ public class UserRepository : IRepositoryGeneric<User>
     }
   }
 
-  public Task DeleteEntity(User entity)
+  public void DeleteEntity(User entity)
   {
     throw new NotImplementedException();
   }
 
-  public Task<IEnumerable<User>> GetAllEntities()
+  public Dictionary<string, User> GetAllEntities()
   {
-    throw new NotImplementedException();
-  }
-
-  public Task<User> GetByIDEntity(int id)
-  {
-    throw new NotImplementedException();
-  }
-
-  public async Task SaveChanges()
-  {
-    if (!Directory.Exists(_folderPath))
+    Dictionary <String, User> dictionaryUsers = new Dictionary<string, User>();;
+    String jsonString;
+    if (File.Exists(_filePath))
     {
-      Directory.CreateDirectory(_folderPath);
+      jsonString = File.ReadAllText(_filePath);
+      dictionaryUsers = JsonSerializer.Deserialize<Dictionary<string, User>>(jsonString);
+    }
+    else
+    {
+      dictionaryUsers = EntityDictionary;
+    }
+    return dictionaryUsers;
+  }
+
+  public User GetByIDEntity(int id)
+  {
+    throw new NotImplementedException();
+  }
+
+  public void UpdateEntity(User entity)
+  {
+    throw new NotImplementedException();
+  }
+
+  public void SaveChanges()
+  {
+    string directoryPath = Path.GetDirectoryName(_filePath);
+    if (!Directory.Exists(directoryPath))
+    {
+      Directory.CreateDirectory(directoryPath);
     }
     var serializeOptions = new JsonSerializerOptions { WriteIndented = true };
     string jsonString = JsonSerializer.Serialize(EntityDictionary, serializeOptions);
     File.WriteAllText(_filePath, jsonString);
-  }
-
-  public Task UpdateEntity(User entity)
-  {
-    throw new NotImplementedException();
   }
 }
