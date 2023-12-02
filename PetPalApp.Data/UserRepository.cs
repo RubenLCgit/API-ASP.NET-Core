@@ -49,9 +49,19 @@ public class UserRepository : IRepositoryGeneric<User>
     return dictionaryUsers;
   }
 
-  public User GetByIDEntity(int id)
+  public User GetByNameEntity(string name)
   {
-    throw new NotImplementedException();
+    var dictionaryCurrentUser = GetAllEntities();
+    User user = new();
+    foreach (var item in dictionaryCurrentUser)
+    {
+      if (item.Value.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
+      {
+        user = item.Value;
+        break;
+      }
+    }
+    return user;
   }
 
   public void UpdateEntity(User entity)

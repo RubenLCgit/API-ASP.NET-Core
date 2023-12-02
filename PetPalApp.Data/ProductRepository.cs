@@ -20,7 +20,7 @@ public class ProductRepository : IRepositoryGeneric<Product>
     throw new NotImplementedException();
   }
 
-  public Product GetByIDEntity(int id)
+  public Product GetByNameEntity(string name)
   {
     throw new NotImplementedException();
   }

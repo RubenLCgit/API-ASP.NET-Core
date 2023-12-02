@@ -5,12 +5,14 @@ namespace PetPalApp.Presentation;
 public class UserMenu
 {
   public readonly IUserService userService;
+  public readonly ISupplierService supplierService;
 
-  public UserMenu(IUserService _userService) {
+  public UserMenu(IUserService _userService, ISupplierService _supplierService) {
     userService = _userService;
+    supplierService = _supplierService;
   }
 
-    public void DisplayUserMenu()
+    public void DisplayUserMenu(string name)
   {
     #if !DEBUG
     Console.Clear();
@@ -23,25 +25,27 @@ public class UserMenu
     3. Main Menu
     ");
     Console.Write("\n\nPlease select an option:");
-    SelectUserOption(Console.ReadLine());
+    SelectUserOption(name, Console.ReadLine());
   }
-  public void SelectUserOption(string option)
+  public void SelectUserOption(string name, string option)
   {
-    MainMenu mainMenu = new(userService);
+    MainMenu mainMenu = new(userService, supplierService);
+    ServiceMenu serviceMenu = new(userService, supplierService);
+    PersonalMenu personalMenu = new(userService, supplierService);
     switch (option)
     {
       case "1":
-        Console.WriteLine("Show Services");
+        serviceMenu.DisplayServiceMenu(name);
       break;
       case "2":
-        Console.WriteLine("Show My Account");
+        personalMenu.DisplayPersonalMenu(name);
       break;
       case "3":
         mainMenu.DisplayMainMenu();
       break;
       default:
         Console.WriteLine("\nInvalid option\n");
-        DisplayUserMenu();
+        DisplayUserMenu(name);
         break;
     }
   }
