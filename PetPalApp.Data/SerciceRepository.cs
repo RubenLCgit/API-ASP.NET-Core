@@ -5,32 +5,32 @@ namespace PetPalApp.Data;
 
 public class ServiceRepository : IRepositoryGeneric<Service>
 {
-  public Task AddEntity(Service entity)
+  public void AddEntity(Service entity)
   {
     throw new NotImplementedException();
   }
 
-  public Task DeleteEntity(Service entity)
+  public void DeleteEntity(Service entity)
   {
     throw new NotImplementedException();
   }
 
-  public Task<IEnumerable<Service>> GetAllEntities()
+  public Dictionary<string, Service> GetAllEntities()
   {
     throw new NotImplementedException();
   }
 
-  public Task<Service> GetByIDEntity(int id)
+  public Service GetByIDEntity(int id)
   {
     throw new NotImplementedException();
   }
 
-  public Task SaveChanges()
+  public void SaveChanges()
   {
     throw new NotImplementedException();
   }
 
-  public Task UpdateEntity(Service entity)
+  public void UpdateEntity(Service entity)
   {
     throw new NotImplementedException();
   }
