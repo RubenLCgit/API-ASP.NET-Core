@@ -30,7 +30,7 @@ public class ProductRepository : IRepositoryGeneric<Product>
     throw new NotImplementedException();
   }
 
-  public void UpdateEntity(Product entity)
+  public void UpdateEntity(string key, Product entity)
   {
     throw new NotImplementedException();
   }

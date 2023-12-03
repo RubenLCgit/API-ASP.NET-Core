@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using PetPalApp.Data;
 using PetPalApp.Domain;
@@ -7,38 +8,38 @@ namespace PetPalApp.Business;
 public class SupplierService : ISupplierService
 {
   
-  private IRepositoryGeneric<Service> repository;
+  private IRepositoryGeneric<Service> Srepository;
+  private IRepositoryGeneric<User> Urepository;
 
-  public SupplierService(IRepositoryGeneric<Service> _repository)
+  public SupplierService(IRepositoryGeneric<Service> _srepository, IRepositoryGeneric<User> _urepository)
   {
-    repository = _repository;
+    Srepository = _srepository;
+    Urepository = _urepository;
   }
 
-  public void DeleteService(string userName, string userPassword, int serviceId)
+  public void RegisterService(int idUser, String nameUser, String type, String nameService, string description, decimal price, bool online)
   {
-    throw new NotImplementedException();
-  }
-
-  public void RegisterService(int idUser, string type, string name, string description, decimal price, bool online)
-  {
-    Service service = new(type, name, description, price, online);
+    Service service = new(type, nameService, description, price, online);
     AssignId(service);
     service.UserId = idUser;
-    repository.AddEntity(service);
+    Srepository.AddEntity(service);
+    var user = Urepository.GetByNameEntity(nameUser);
+    user.ListServices.Add(service.ServiceId, service);
+    Urepository.UpdateEntity(nameUser, user);
   }
 
   private void AssignId(Service service)
   {
-    var allUsers = repository.GetAllEntities();
+    var allServices = Srepository.GetAllEntities();
     int nextId = 0;
     int newId;
-    if (allUsers == null || allUsers.Count == 0)
+    if (allServices == null || allServices.Count == 0)
     {
       service.ServiceId = "1";
     }
     else
     {
-      foreach (var item in allUsers)
+      foreach (var item in allServices)
       {
         if (int.Parse(item.Value.ServiceId) > nextId)
         {
@@ -50,18 +51,62 @@ public class SupplierService : ISupplierService
     }
   }
 
-  public Service SearchService(string serviceType)
+  public string PrintServices(Dictionary<string, Service> services)
   {
-    throw new NotImplementedException();
+    String allDataService = "";
+    foreach (var item in services)
+    {
+      string online;
+      if (item.Value.ServiceOnline) online = "Yes";
+      else online = "No";
+      String addService = @$"
+
+    ====================================================================================
+    
+    - Type:                         {item.Value.ServiceType}
+    - Name:                         {item.Value.ServiceName}
+    - Desciption:                   {item.Value.ServiceDescription}
+    - Date of availabilility:       {item.Value.ServiceAvailability}
+    - Home delivery service:        {online}
+    - Score:                        {item.Value.ServiceRating}
+    - Price:                        {item.Value.ServicePrice} €
+    
+    ====================================================================================";
+
+      allDataService += addService;
+    }
+    return allDataService;
   }
 
-  public Dictionary<string, Service> ShowAllServices()
+  public Dictionary<string, Service> SearchService(string serviceType)
   {
-    throw new NotImplementedException();
+    var allServices = Srepository.GetAllEntities();
+    Dictionary<string, Service> typeServices = new();
+    foreach (var item in allServices)
+    {
+      if (item.Value.ServiceType.IndexOf(serviceType,StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ServiceDescription.IndexOf(serviceType, StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ServiceName.IndexOf(serviceType, StringComparison.OrdinalIgnoreCase) >= 0)
+      {
+        typeServices.Add(item.Value.ServiceId, item.Value);
+      }
+    }
+    return typeServices;
+  }
+
+  public Dictionary<string, Service> GetAllServices()
+  {
+    var allServices = Srepository.GetAllEntities();
+    
+    return allServices;
   }
 
   public Dictionary<string, Service> ShowMyServices()
   {
     throw new NotImplementedException();
+  }
+
+  public void DeleteService(string key)
+  {
+    var service = Srepository.GetByNameEntity(key);
+    Srepository.DeleteEntity(service);
   }
 }

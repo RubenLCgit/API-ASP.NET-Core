@@ -10,7 +10,7 @@ public class ServiceRepository : IRepositoryGeneric<Service>
   private readonly string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ServiceRepository", "ServicesRepository.json");
   public void AddEntity(Service entity)
   {
-    Dictionary<String, Service> listServices;
+    Dictionary<string, Service> listServices;
     try
     {
       if (File.Exists(_filePath))
@@ -29,7 +29,9 @@ public class ServiceRepository : IRepositoryGeneric<Service>
 
   public void DeleteEntity(Service entity)
   {
-    throw new NotImplementedException();
+    EntityDictionary = GetAllEntities();
+    EntityDictionary.Remove(entity.ServiceId);
+    SaveChanges();
   }
 
   public Dictionary<string, Service> GetAllEntities()
@@ -47,9 +49,19 @@ public class ServiceRepository : IRepositoryGeneric<Service>
     }
     return dictionaryUsers;
   }
-  public Service GetByNameEntity(string name)
+  public Service GetByNameEntity(string id)
   {
-    throw new NotImplementedException();
+    var dictionaryCurrentService = GetAllEntities();
+    Service service = new();
+    foreach (var item in dictionaryCurrentService)
+    {
+      if (item.Value.ServiceId.Equals(id, StringComparison.OrdinalIgnoreCase))
+      {
+        service = item.Value;
+        break;
+      }
+    }
+    return service;
   }
 
   public void SaveChanges()
@@ -64,8 +76,10 @@ public class ServiceRepository : IRepositoryGeneric<Service>
     File.WriteAllText(_filePath, jsonString);
   }
 
-  public void UpdateEntity(Service entity)
+  public void UpdateEntity(string key, Service service)
   {
-    throw new NotImplementedException();
+    EntityDictionary = GetAllEntities();
+    EntityDictionary[key] = service;
+    SaveChanges();
   }
 }

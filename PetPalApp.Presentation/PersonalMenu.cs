@@ -28,13 +28,16 @@ public class PersonalMenu
 
     5. Remove product or service
 
-    6. Back
+    6. Delete account
+
+    7. Back
     ");
     Console.Write("\n\nPlease select an option:");
     SelectServiceOption(name, Console.ReadLine());
   }
   public void SelectServiceOption(string name, string option)
   {
+    MainMenu mainMenu = new(userService, supplierService);
     UserMenu userMenu = new(userService, supplierService);
     switch (option)
     {
@@ -57,6 +60,27 @@ public class PersonalMenu
         Console.WriteLine("Remove product or service");
       break;
       case "6":
+        Console.WriteLine("Are you sure you want to delete your account? Y/N: ");
+        String deleteAccount = Console.ReadLine();
+        while (string.IsNullOrEmpty(deleteAccount) || !string.Equals(deleteAccount, "Y", StringComparison.OrdinalIgnoreCase) && !String.Equals(deleteAccount, "N", StringComparison.OrdinalIgnoreCase))
+        {
+          Console.Write("\nYou must enter y or n: ");
+          deleteAccount = Console.ReadLine();
+        }
+        if (deleteAccount.Equals("y", StringComparison.CurrentCultureIgnoreCase))
+        {
+          Console.WriteLine("Deleting account");
+          MainMenu.EmuleLoad();
+          userService.DeleteUser(name);
+          Console.WriteLine("Account deleted");
+          Console.WriteLine("Account deleted");
+          MainMenu.EmuleLoad();
+          mainMenu.DisplayMainMenu();
+        }
+        else DisplayPersonalMenu(name);
+        
+      break;
+      case "7":
         userMenu.DisplayUserMenu(name);
       break;
       default:
@@ -122,7 +146,7 @@ public class PersonalMenu
     {
       online = false;
     }
-    supplierService.RegisterService(idUser, type, nameService, description, price, online);
+    supplierService.RegisterService(idUser, name, type, nameService, description, price, online);
     
     DisplayPersonalMenu(name);
   }

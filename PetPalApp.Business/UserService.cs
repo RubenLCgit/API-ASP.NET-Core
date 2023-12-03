@@ -120,4 +120,10 @@ public class UserService : IUserService
     string regularExpresionEmail = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
     return Regex.IsMatch(email, regularExpresionEmail);
   }
+
+  public void DeleteUser(string key)
+  {
+    var user = repository.GetByNameEntity(key);
+    repository.DeleteEntity(user);
+  }
 }
