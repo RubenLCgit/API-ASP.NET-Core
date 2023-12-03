@@ -5,9 +5,11 @@ namespace PetPalApp.Presentation;
 public class MainMenu
 {
   public readonly IUserService userService;
+  public readonly ISupplierService supplierService;
 
-  public MainMenu(IUserService _userService) {
+  public MainMenu(IUserService _userService, ISupplierService _supplierService) {
     userService = _userService;
+    supplierService = _supplierService;
   }
   public void ApplicationInit()
   {
@@ -108,18 +110,22 @@ public class MainMenu
 
   private void EnterDataLoginUser()
   {
-    UserMenu userMenu = new(userService);
+    UserMenu userMenu = new(userService, supplierService);
     string name, password;
     Console.Write("\nEnter your user name: ");
     name = Console.ReadLine();
     Console.Write("\nEnter your secret password: ");
     password = Console.ReadLine();//TODO: Implement password entry method with asterisks
-    if (!userService.checkUserExist(name, password))
+    if (!userService.CheckLogin(name, password))
     {
       Console.WriteLine($"Incorrect username or password.");
       DisplayMainMenu();
     }
-    else userMenu.DisplayUserMenu();
+    else 
+    {
+      userMenu.DisplayUserMenu(name);
+    }
+    
   }
   public static void EmuleLoad()
   {

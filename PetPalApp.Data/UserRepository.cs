@@ -30,7 +30,9 @@ public class UserRepository : IRepositoryGeneric<User>
 
   public void DeleteEntity(User entity)
   {
-    throw new NotImplementedException();
+    EntityDictionary = GetAllEntities();
+    EntityDictionary.Remove(entity.UserName);
+    SaveChanges();
   }
 
   public Dictionary<string, User> GetAllEntities()
@@ -49,14 +51,26 @@ public class UserRepository : IRepositoryGeneric<User>
     return dictionaryUsers;
   }
 
-  public User GetByIDEntity(int id)
+  public User GetByNameEntity(string name)
   {
-    throw new NotImplementedException();
+    var dictionaryCurrentUser = GetAllEntities();
+    User user = new();
+    foreach (var item in dictionaryCurrentUser)
+    {
+      if (item.Value.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
+      {
+        user = item.Value;
+        break;
+      }
+    }
+    return user;
   }
 
-  public void UpdateEntity(User entity)
+  public void UpdateEntity(String key, User user)
   {
-    throw new NotImplementedException();
+    EntityDictionary = GetAllEntities();
+    EntityDictionary[key] = user;
+    SaveChanges();
   }
 
   public void SaveChanges()

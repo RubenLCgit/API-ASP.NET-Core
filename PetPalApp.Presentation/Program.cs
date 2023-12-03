@@ -4,6 +4,8 @@ using PetPalApp.Domain;
 using PetPalApp.Presentation;
 
 IRepositoryGeneric<User> userRepository= new UserRepository();
+IRepositoryGeneric<Service> serviceRepository= new ServiceRepository();
 IUserService userService = new UserService(userRepository);
-MainMenu mainMenu = new(userService);
+ISupplierService supplierService = new SupplierService(serviceRepository, userRepository);
+MainMenu mainMenu = new(userService, supplierService);
 mainMenu.ApplicationInit();

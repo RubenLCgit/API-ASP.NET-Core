@@ -9,8 +9,7 @@ public class User
   public DateTime UserRegisterDate { get; set; }
   public bool UserSupplier { get; set; }
   public double UserRating { get; set; }
-
-  private static int UserIdSeed = 1;
+  public Dictionary<string, Service> ListServices{ get; set; }
 
   public User() { }
 
@@ -20,9 +19,8 @@ public class User
     UserEmail = email;
     UserPassword = password;
     UserSupplier = supplier;
-    UserId = UserIdSeed;
-    UserIdSeed++;
     UserRegisterDate = DateTime.Now;
     UserRating = 0.0;
+    ListServices = new Dictionary<string, Service>();
   }
 }
