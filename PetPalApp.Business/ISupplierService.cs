@@ -9,9 +9,9 @@ public interface ISupplierService
 
   public Dictionary<string, Service> GetAllServices();
 
-  Dictionary<string, Service> ShowMyServices();
+  Dictionary<string, Service> ShowMyServices(String key);
 
   public string PrintServices(Dictionary<string, Service> services);
 
-  void DeleteService(String key);
+  void DeleteService(string userName, string serviceId);
 }

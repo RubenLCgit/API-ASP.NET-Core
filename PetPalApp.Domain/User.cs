@@ -10,6 +10,7 @@ public class User
   public bool UserSupplier { get; set; }
   public double UserRating { get; set; }
   public Dictionary<string, Service> ListServices{ get; set; }
+  public Dictionary<string, Product> ListProducts{ get; set; }
 
   public User() { }
 
@@ -22,5 +23,6 @@ public class User
     UserRegisterDate = DateTime.Now;
     UserRating = 0.0;
     ListServices = new Dictionary<string, Service>();
+    ListProducts = new Dictionary<string, Product>();
   }
 }

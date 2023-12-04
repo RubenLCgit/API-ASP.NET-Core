@@ -6,10 +6,12 @@ public class UserMenu
 {
   public readonly IUserService userService;
   public readonly ISupplierService supplierService;
+  public readonly IProductService productService;
 
-  public UserMenu(IUserService _userService, ISupplierService _supplierService) {
+  public UserMenu(IUserService _userService, ISupplierService _supplierService, IProductService _productService) {
     userService = _userService;
     supplierService = _supplierService;
+    productService = _productService;
   }
 
     public void DisplayUserMenu(string name)
@@ -29,9 +31,9 @@ public class UserMenu
   }
   public void SelectUserOption(string name, string option)
   {
-    MainMenu mainMenu = new(userService, supplierService);
+    MainMenu mainMenu = new(userService, supplierService, productService);
     ServiceMenu serviceMenu = new(userService, supplierService);
-    PersonalMenu personalMenu = new(userService, supplierService);
+    PersonalMenu personalMenu = new(userService, supplierService, productService);
     switch (option)
     {
       case "1":

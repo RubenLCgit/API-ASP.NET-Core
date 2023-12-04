@@ -6,6 +6,7 @@ public class ServiceMenu
 {
   public readonly IUserService userService;
   public readonly ISupplierService supplierService;
+  public readonly IProductService productService;
 
   public ServiceMenu(IUserService _userService, ISupplierService _supplierService) {
     userService = _userService;
@@ -29,7 +30,7 @@ public class ServiceMenu
   }
   public void SelectServiceOption(string name, string option)
   {
-    UserMenu userMenu = new(userService, supplierService);
+    UserMenu userMenu = new(userService, supplierService, productService);
     switch (option)
     {
       case "1":
