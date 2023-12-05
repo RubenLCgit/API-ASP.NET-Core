@@ -6,10 +6,12 @@ public class MainMenu
 {
   public readonly IUserService userService;
   public readonly ISupplierService supplierService;
+  public readonly IProductService productService;
 
-  public MainMenu(IUserService _userService, ISupplierService _supplierService) {
+  public MainMenu(IUserService _userService, ISupplierService _supplierService, IProductService _productService) {
     userService = _userService;
     supplierService = _supplierService;
+    productService = _productService;
   }
   public void ApplicationInit()
   {
@@ -110,7 +112,7 @@ public class MainMenu
 
   private void EnterDataLoginUser()
   {
-    UserMenu userMenu = new(userService, supplierService);
+    UserMenu userMenu = new(userService, supplierService, productService);
     string name, password;
     Console.Write("\nEnter your user name: ");
     name = Console.ReadLine();

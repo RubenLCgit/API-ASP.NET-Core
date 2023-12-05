@@ -6,10 +6,12 @@ public class ServiceMenu
 {
   public readonly IUserService userService;
   public readonly ISupplierService supplierService;
+  public readonly IProductService productService;
 
-  public ServiceMenu(IUserService _userService, ISupplierService _supplierService) {
+  public ServiceMenu(IUserService _userService, ISupplierService _supplierService, IProductService _productService) {
     userService = _userService;
     supplierService = _supplierService;
+    productService = _productService;
   }
 
     public void DisplayServiceMenu(string name)
@@ -29,7 +31,7 @@ public class ServiceMenu
   }
   public void SelectServiceOption(string name, string option)
   {
-    UserMenu userMenu = new(userService, supplierService);
+    UserMenu userMenu = new(userService, supplierService, productService);
     switch (option)
     {
       case "1":
@@ -59,7 +61,7 @@ public class ServiceMenu
     }
   }
 
-  private void PressToContinue()
+  public void PressToContinue()
   {
     Console.WriteLine("Press any key to continue...");
     Console.ReadKey();

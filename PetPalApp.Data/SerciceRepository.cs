@@ -49,7 +49,7 @@ public class ServiceRepository : IRepositoryGeneric<Service>
     }
     return dictionaryUsers;
   }
-  public Service GetByNameEntity(string id)
+  public Service GetByStringEntity(string id)
   {
     var dictionaryCurrentService = GetAllEntities();
     Service service = new();
