@@ -32,7 +32,7 @@ public class UserMenu
   public void SelectUserOption(string name, string option)
   {
     MainMenu mainMenu = new(userService, supplierService, productService);
-    ServiceMenu serviceMenu = new(userService, supplierService);
+    ServiceMenu serviceMenu = new(userService, supplierService, productService);
     PersonalMenu personalMenu = new(userService, supplierService, productService);
     switch (option)
     {

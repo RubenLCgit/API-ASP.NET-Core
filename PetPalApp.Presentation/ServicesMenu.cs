@@ -8,9 +8,10 @@ public class ServiceMenu
   public readonly ISupplierService supplierService;
   public readonly IProductService productService;
 
-  public ServiceMenu(IUserService _userService, ISupplierService _supplierService) {
+  public ServiceMenu(IUserService _userService, ISupplierService _supplierService, IProductService _productService) {
     userService = _userService;
     supplierService = _supplierService;
+    productService = _productService;
   }
 
     public void DisplayServiceMenu(string name)
@@ -60,7 +61,7 @@ public class ServiceMenu
     }
   }
 
-  private void PressToContinue()
+  public void PressToContinue()
   {
     Console.WriteLine("Press any key to continue...");
     Console.ReadKey();

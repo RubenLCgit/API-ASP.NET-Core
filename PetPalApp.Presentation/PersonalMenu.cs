@@ -42,6 +42,7 @@ public class PersonalMenu
   {
     MainMenu mainMenu = new(userService, supplierService, productService);
     UserMenu userMenu = new(userService, supplierService, productService);
+    ServiceMenu serviceMenu = new ServiceMenu(userService, supplierService, productService);
     switch (option)
     {
       case "1":
@@ -57,7 +58,12 @@ public class PersonalMenu
         EnterProductData(name);
       break;
       case "4":
-        Console.WriteLine("view products and services");
+        String listUserServices = supplierService.PrintServices(supplierService.ShowMyServices(name));
+        String listUserProducts = productService.PrintProduct(productService.ShowMyProducts(name));
+        Console.WriteLine($"{name}`s services:\n\n{listUserServices}\n\n");
+        Console.WriteLine($"{name}`s products:\n\n{listUserProducts}\n\n");
+        serviceMenu.PressToContinue();
+        DisplayPersonalMenu(name);
       break;
       case "5":
       Console.WriteLine("Delete a service or a product?\n");
