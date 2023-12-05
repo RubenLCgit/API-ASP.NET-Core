@@ -95,7 +95,7 @@ public class UserService : IUserService
 
   public string ShowAccount(string name)
   {
-    var currentUser = repository.GetByNameEntity(name);
+    var currentUser = repository.GetByStringEntity(name);
     String supplier;
     if (currentUser.UserSupplier == true) supplier = "Yes, I am a supplier";
     else supplier = "No, I am not a supplier";
@@ -123,7 +123,22 @@ public class UserService : IUserService
 
   public void DeleteUser(string key)
   {
-    var user = repository.GetByNameEntity(key);
+    var user = repository.GetByStringEntity(key);
     repository.DeleteEntity(user);
+  }
+
+  public void DeleteUserService(string userName, string serviceId )
+  {
+    var user = repository.GetByStringEntity(userName);
+    user.ListServices.Remove(serviceId);
+    repository.UpdateEntity(userName, user);
+  }
+
+  public void DeleteUserProduct(string userName, string serviceId )
+  {
+    //var allUsers = repository.GetAllEntities();
+    var user = repository.GetByStringEntity(userName);
+    user.ListProducts.Remove(serviceId);
+    repository.UpdateEntity(userName, user);
   }
 }

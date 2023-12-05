@@ -23,7 +23,7 @@ public class SupplierService : ISupplierService
     AssignId(service);
     service.UserId = idUser;
     Srepository.AddEntity(service);
-    var user = Urepository.GetByNameEntity(nameUser);
+    var user = Urepository.GetByStringEntity(nameUser);
     user.ListServices.Add(service.ServiceId, service);
     Urepository.UpdateEntity(nameUser, user);
   }
@@ -99,14 +99,21 @@ public class SupplierService : ISupplierService
     return allServices;
   }
 
-  public Dictionary<string, Service> ShowMyServices()
+  public Dictionary<string, Service> ShowMyServices(String key)
   {
-    throw new NotImplementedException();
+    Dictionary<string, Service> userServices = Urepository.GetByStringEntity(key).ListServices;
+
+    return userServices;
   }
 
-  public void DeleteService(string key)
+  public void DeleteService(string userName, string serviceId)
   {
-    var service = Srepository.GetByNameEntity(key);
-    Srepository.DeleteEntity(service);
+    var service = Srepository.GetByStringEntity(serviceId);
+    User user = Urepository.GetByStringEntity(userName);
+    if (user.ListServices.ContainsKey(serviceId))
+    {
+      Srepository.DeleteEntity(service);
+    }
+    else Console.WriteLine("The service you want to delete does not exist or belongs to another user.");
   }
 }

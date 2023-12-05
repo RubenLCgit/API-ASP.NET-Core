@@ -51,7 +51,7 @@ public class UserRepository : IRepositoryGeneric<User>
     return dictionaryUsers;
   }
 
-  public User GetByNameEntity(string name)
+  public User GetByStringEntity(string name)
   {
     var dictionaryCurrentUser = GetAllEntities();
     User user = new();
