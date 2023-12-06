@@ -65,6 +65,7 @@ public class MainMenu
       break;
       default:
         Console.WriteLine("\nInvalid option\n");
+        ServiceMenu.PressToContinue();
         DisplayMainMenu();
       break;
     }
@@ -72,48 +73,55 @@ public class MainMenu
 
   private void EnterUserData() {
     string name, email, supplier, password;
-
-    Console.Write("Enter your user name: ");
+    Console.Write("\nEnter your user name: ");
     name = Console.ReadLine();
     while (string.IsNullOrEmpty(name))
     {
-      Console.Write("\nYou must enter a valid user name: ");
+    Console.Write("\nYou must enter a valid user name: ");
       name = Console.ReadLine();
     }
     Console.Write("\nEnter a valid email address: ");
     email = Console.ReadLine();
     while (!userService.ValidatEmail(email))
     {
-      Console.Write("\nYou must enter a valid e-mail address: ");
-      email = Console.ReadLine();
-    }
-    Console.Write("\nAre you a supplier? Y/N: ");
-    supplier = Console.ReadLine();
-    while (string.IsNullOrEmpty(supplier) || !string.Equals(supplier, "Y", StringComparison.OrdinalIgnoreCase) && !String.Equals(supplier, "N", StringComparison.OrdinalIgnoreCase))
-    {
-      Console.Write("\nYou must enter \"Y\" or \"N\": ");
-      supplier = Console.ReadLine();
-    }
-    Console.Write("\nEnter your secret password: ");
-    password = Console.ReadLine();
-    while (string.IsNullOrEmpty(password) || password.Length < 7)
-    {
-      Console.Write("\nYour password must consist of at least 7 characters: ");
-      password = Console.ReadLine();
+    Console.Write("\nYou must enter a valid e-mail address: ");
+    email = Console.ReadLine();
     }
     if (userService.checkUserExist(name, email))
     {
-      Console.WriteLine($"User {name} or email {email} already exists.");
+      Console.Write($"\nUser {name} or email {email} already exists.");
+      ServiceMenu.PressToContinue();
+      DisplayMainMenu();
     }
-    else userService.RegisterUser(name, email, password, supplier);
-    
-    DisplayMainMenu();
+    else
+    {
+      Console.Write("\nAre you a supplier? Y/N: ");
+      supplier = Console.ReadLine();
+      while (string.IsNullOrEmpty(supplier) || !string.Equals(supplier, "Y", StringComparison.OrdinalIgnoreCase) && !String.Equals(supplier, "N", StringComparison.OrdinalIgnoreCase))
+      {
+        Console.Write("\nYou must enter \"Y\" or \"N\": ");
+        supplier = Console.ReadLine();
+      }
+      Console.Write("\nEnter your secret password: ");
+      password = Console.ReadLine();
+      while (string.IsNullOrEmpty(password) || password.Length < 7)
+      {
+        Console.Write("\nYour password must consist of at least 7 characters: ");
+        password = Console.ReadLine();
+      }
+      userService.RegisterUser(name, email, password, supplier);
+      Console.WriteLine("Registered user.");
+      ServiceMenu.PressToContinue();
+      DisplayMainMenu();
+    }
   }
 
   private void EnterDataLoginUser()
   {
     UserMenu userMenu = new(userService, supplierService, productService);
+    ServiceMenu serviceMenu = new(userService, supplierService, productService);
     string name, password;
+    bool incorrectLogin = true;
     Console.Write("\nEnter your user name: ");
     name = Console.ReadLine();
     Console.Write("\nEnter your secret password: ");
@@ -121,13 +129,14 @@ public class MainMenu
     if (!userService.CheckLogin(name, password))
     {
       Console.WriteLine($"Incorrect username or password.");
-      DisplayMainMenu();
+      ServiceMenu.PressToContinue();
     }
     else 
     {
-      userMenu.DisplayUserMenu(name);
+        incorrectLogin = false;
     }
-    
+    if (incorrectLogin) DisplayMainMenu();
+    else userMenu.DisplayUserMenu(name);
   }
   public static void EmuleLoad()
   {

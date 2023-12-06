@@ -56,14 +56,17 @@ public class ServiceMenu
       break;
       default:
         Console.WriteLine("\nInvalid option\n");
-        
+        PressToContinue();
+        DisplayServiceMenu(name);
         break;
     }
   }
 
-  public void PressToContinue()
+  public static void PressToContinue()
   {
     Console.WriteLine("Press any key to continue...");
+    #if !DEBUG
     Console.ReadKey();
+    #endif
   }
 }

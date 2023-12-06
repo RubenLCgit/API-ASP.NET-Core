@@ -60,31 +60,50 @@ public class PersonalMenu
       case "4":
         String listUserServices = supplierService.PrintServices(supplierService.ShowMyServices(name));
         String listUserProducts = productService.PrintProduct(productService.ShowMyProducts(name));
-        Console.WriteLine($"{name}`s services:\n\n{listUserServices}\n\n");
-        Console.WriteLine($"{name}`s products:\n\n{listUserProducts}\n\n");
-        serviceMenu.PressToContinue();
+        Console.WriteLine($"{name}'s services:\n\n{listUserServices}\n\n");
+        Console.WriteLine($"{name}'s products:\n\n{listUserProducts}\n\n");
+        ServiceMenu.PressToContinue();
         DisplayPersonalMenu(name);
       break;
       case "5":
       Console.WriteLine("Delete a service or a product?\n");
-      Console.WriteLine("\n1. Product\n2. Service");
-      String entity = "", entityToDelete = Console.ReadLine();
-      switch (entityToDelete)
+      bool optioIncorrect = true;
+        String entity = "";
+      do
       {
-        case "1":
-          entity = "product";
-          break;
-
-        case "2":
-            entity = "service";
+        Console.WriteLine("\n1. Product\n2. Service\n3.Back");
+        String entityToDelete = Console.ReadLine();
+        switch (entityToDelete)
+        {
+          case "1":
+            entity = "product";
+            optioIncorrect = false;
             break;
-        default:
-          Console.WriteLine("\nInvalid option\n");
+
+          case "2":
+              entity = "service";
+              optioIncorrect = false;
+              break;
+          case "3":
+              DisplayPersonalMenu(name);
+              optioIncorrect = false;
+              break;
+          default:
+            Console.WriteLine("\nInvalid option\n");
+
+          break;
+        }
+      } while (optioIncorrect);
+      if (string.IsNullOrEmpty(entity))
+      {
         break;
       }
-      DeleteUserProductOrService(entity, name);
-      MainMenu.EmuleLoad();
-      DisplayPersonalMenu(name);
+      else
+      {
+        DeleteUserProductOrService(entity, name);
+        MainMenu.EmuleLoad();
+        DisplayPersonalMenu(name);
+      }
       break;
       case "6":
         DeleteUserProductOrService("account", name);
@@ -96,6 +115,8 @@ public class PersonalMenu
       break;
       default:
         Console.WriteLine("\nInvalid option\n");
+        ServiceMenu.PressToContinue();
+        DisplayPersonalMenu(name);
       break;
     }
   }
