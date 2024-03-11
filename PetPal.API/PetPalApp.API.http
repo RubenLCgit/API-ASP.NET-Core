@@ -1,0 +1,6 @@
+@PetPalAppAPIHostAddress = http://localhost:5288
+
+GET {{PetPalAppAPIHostAddress}}/weatherforecast/
+Accept: application/json
+
+###

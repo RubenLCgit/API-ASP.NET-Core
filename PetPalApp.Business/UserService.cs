@@ -13,13 +13,47 @@ public class UserService : IUserService
     repository = _repository;
   }
 
-  public bool checkUserExist(string name, string email)
+  public Dictionary<string, UserCreateUpdateDTO> GetAllUsers()
+  {
+    if (repository.GetAllEntities() == null) throw new Exception("No users found");
+
+    return ConvertToDictionaryDTO(repository.GetAllEntities());
+  }
+
+  private Dictionary<string, UserCreateUpdateDTO> ConvertToDictionaryDTO(Dictionary<string, User> users)
+  {
+    return users.ToDictionary(pair => pair.Key, pair => new UserCreateUpdateDTO(pair.Value));
+  }
+
+  public UserCreateUpdateDTO GetUser(string name)
+  {
+    var user = repository.GetByStringEntity(name);
+    if (user == null) throw new KeyNotFoundException("User not found");
+
+    return new UserCreateUpdateDTO(user);
+  }
+
+  public void UpdateUser(string key, UserCreateUpdateDTO userCreateUpdateDTO)
+  {
+    if (checkUserExist(name: key))
+    {
+      var user = repository.GetByStringEntity(key);
+      user.UserName = userCreateUpdateDTO.UserName;
+      user.UserEmail = userCreateUpdateDTO.UserEmail;
+      user.UserPassword = userCreateUpdateDTO.UserPassword;
+      user.UserSupplier = userCreateUpdateDTO.UserSupplier;
+      repository.UpdateEntity(key, user);
+    }
+    else throw new KeyNotFoundException("User not found");
+  }
+
+  public bool checkUserExist(string name = null, string email = null)
   {
     bool userExist=false;
     var allUsers = repository.GetAllEntities();
     foreach (var item in allUsers)
     {
-      if (item.Key.Equals(name, StringComparison.OrdinalIgnoreCase)||item.Value.UserEmail.Equals(email, StringComparison.OrdinalIgnoreCase))
+      if ((name != null && item.Key.Equals(name, StringComparison.OrdinalIgnoreCase))||(email != null && item.Value.UserEmail.Equals(email, StringComparison.OrdinalIgnoreCase)))
       {
         userExist = true;
         break;
@@ -43,20 +77,19 @@ public class UserService : IUserService
     return login;
   }
 
-  public void RegisterUser(string name, string email, string password, String stringSupplier)
+  public User RegisterUser(string name, string email, string password, bool Supplier)
   {
-    bool boolSupplier;
-    if (String.Equals(stringSupplier, "Y", StringComparison.OrdinalIgnoreCase))
+    try
     {
-      boolSupplier = true;
+      User user = new(name, email, password, Supplier);
+      AssignId(user);
+      repository.AddEntity(user);
+      return user;
     }
-    else
+    catch (Exception ex)
     {
-      boolSupplier = false;
+      throw new Exception("Registration could not be completed", ex);
     }
-    User user = new(name, email, password, boolSupplier);
-    AssignId(user);
-    repository.AddEntity(user);
   }
 
   private void AssignId(User user)
@@ -124,6 +157,7 @@ public class UserService : IUserService
   public void DeleteUser(string key)
   {
     var user = repository.GetByStringEntity(key);
+    if(user==null)throw new KeyNotFoundException("User not found");
     repository.DeleteEntity(user);
   }
 

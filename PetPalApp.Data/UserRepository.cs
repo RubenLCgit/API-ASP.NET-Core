@@ -12,20 +12,14 @@ public class UserRepository : IRepositoryGeneric<User>
   public void AddEntity(User entity)
   {
     Dictionary<String, User> listUsers;
-    try
+    
+    if (File.Exists(_filePath))
     {
-      if (File.Exists(_filePath))
-      {
-        listUsers = GetAllEntities();
-        EntityDictionary = listUsers;
-      }
-      EntityDictionary.Add(entity.UserName, entity);
-      SaveChanges();
+      listUsers = GetAllEntities();
+      EntityDictionary = listUsers;
     }
-    catch (Exception ex)
-    {
-      throw new Exception("No se ha podido realizar el registro", ex);
-    }
+    EntityDictionary.Add(entity.UserName, entity);
+    SaveChanges();
   }
 
   public void DeleteEntity(User entity)
@@ -54,7 +48,7 @@ public class UserRepository : IRepositoryGeneric<User>
   public User GetByStringEntity(string name)
   {
     var dictionaryCurrentUser = GetAllEntities();
-    User user = new();
+    User user = null;
     foreach (var item in dictionaryCurrentUser)
     {
       if (item.Value.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
