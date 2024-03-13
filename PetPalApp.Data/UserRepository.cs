@@ -25,9 +25,23 @@ public class UserRepository : IRepositoryGeneric<User>
   public void DeleteEntity(User entity)
   {
     EntityDictionary = GetAllEntities();
-    EntityDictionary.Remove(entity.UserName);
+    EntityDictionary.Remove(GetKeyByValue(EntityDictionary,entity));
     SaveChanges();
   }
+
+  public string GetKeyByValue(Dictionary<string, User> dictionary, User user)
+{
+    string key = null;
+    foreach (var item in dictionary)
+    {
+      if (item.Value.UserName.Equals(user.UserName))
+      {
+        key = item.Key;
+        break;
+      }
+    }
+    return key;
+}
 
   public Dictionary<string, User> GetAllEntities()
   {
@@ -57,6 +71,7 @@ public class UserRepository : IRepositoryGeneric<User>
         break;
       }
     }
+    if (user == null) throw new KeyNotFoundException("User not found");
     return user;
   }
 

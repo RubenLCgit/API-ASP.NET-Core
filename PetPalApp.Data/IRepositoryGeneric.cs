@@ -10,4 +10,5 @@ public interface IRepositoryGeneric<T> where T : class
   void DeleteEntity(T entity);
   void SaveChanges();
   Dictionary<string, T> GetAllEntities();
+  string GetKeyByValue(Dictionary<string, T> dictionary, T entity);
 }

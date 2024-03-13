@@ -82,4 +82,9 @@ public class ServiceRepository : IRepositoryGeneric<Service>
     EntityDictionary[key] = service;
     SaveChanges();
   }
+
+  public string GetKeyByValue(Dictionary<string, Service> dictionary, Service service)
+  {
+    throw new NotImplementedException();
+  }
 }

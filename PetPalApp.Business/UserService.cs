@@ -13,35 +13,36 @@ public class UserService : IUserService
     repository = _repository;
   }
 
-  public Dictionary<string, UserCreateUpdateDTO> GetAllUsers()
+  public Dictionary<string, UserDTO> GetAllUsers()
   {
-    if (repository.GetAllEntities() == null) throw new Exception("No users found");
+    if (repository.GetAllEntities() == null) throw new KeyNotFoundException("No users found");
 
     return ConvertToDictionaryDTO(repository.GetAllEntities());
   }
 
-  private Dictionary<string, UserCreateUpdateDTO> ConvertToDictionaryDTO(Dictionary<string, User> users)
+  private Dictionary<string, UserDTO> ConvertToDictionaryDTO(Dictionary<string, User> users)
   {
-    return users.ToDictionary(pair => pair.Key, pair => new UserCreateUpdateDTO(pair.Value));
+    return users.ToDictionary(pair => pair.Key, pair => new UserDTO(pair.Value));
   }
 
-  public UserCreateUpdateDTO GetUser(string name)
+  public UserDTO GetUser(string name)
   {
     var user = repository.GetByStringEntity(name);
     if (user == null) throw new KeyNotFoundException("User not found");
 
-    return new UserCreateUpdateDTO(user);
+    return new UserDTO(user);
   }
 
-  public void UpdateUser(string key, UserCreateUpdateDTO userCreateUpdateDTO)
+  public void UpdateUser(string username, UserUpdateDTO userUpdateDTO)
   {
-    if (checkUserExist(name: key))
+    if (checkUserExist(name: username))
     {
-      var user = repository.GetByStringEntity(key);
-      user.UserName = userCreateUpdateDTO.UserName;
-      user.UserEmail = userCreateUpdateDTO.UserEmail;
-      user.UserPassword = userCreateUpdateDTO.UserPassword;
-      user.UserSupplier = userCreateUpdateDTO.UserSupplier;
+      var user = repository.GetByStringEntity(username);
+      var key = repository.GetKeyByValue(repository.GetAllEntities(), user);
+      user.UserName = user.UserName;
+      user.UserEmail = userUpdateDTO.UserEmail;
+      user.UserPassword = userUpdateDTO.UserPassword;
+      user.UserSupplier = userUpdateDTO.UserSupplier;
       repository.UpdateEntity(key, user);
     }
     else throw new KeyNotFoundException("User not found");
@@ -53,7 +54,7 @@ public class UserService : IUserService
     var allUsers = repository.GetAllEntities();
     foreach (var item in allUsers)
     {
-      if ((name != null && item.Key.Equals(name, StringComparison.OrdinalIgnoreCase))||(email != null && item.Value.UserEmail.Equals(email, StringComparison.OrdinalIgnoreCase)))
+      if ((name != null && item.Value.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))||(email != null && item.Value.UserEmail.Equals(email, StringComparison.OrdinalIgnoreCase)))
       {
         userExist = true;
         break;

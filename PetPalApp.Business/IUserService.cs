@@ -5,7 +5,7 @@ namespace PetPalApp.Business;
 public interface IUserService
 {
   User RegisterUser(String name, String email, String Password, bool Supplier);
-  void UpdateUser(string key, UserCreateUpdateDTO userCreateUpdateDTO);
+  void UpdateUser(string key, UserUpdateDTO userUpdateDTO);
   void DeleteUser(String key);
   void DeleteUserService(string userName, string serviceId);
   void DeleteUserProduct(string userName, string serviceId);
@@ -16,6 +16,6 @@ public interface IUserService
   string ShowAccount(string name);
 
   // Nuevos métodos añadidos a la firma de la interfaz para implenetar la funcionalidad de la API
-  Dictionary<string, UserCreateUpdateDTO> GetAllUsers();
-  UserCreateUpdateDTO GetUser(string name);
+  Dictionary<string, UserDTO> GetAllUsers();
+  UserDTO GetUser(string name);
 }

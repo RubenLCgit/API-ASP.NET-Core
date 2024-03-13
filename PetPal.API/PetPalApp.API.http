@@ -1,6 +1,39 @@
 @PetPalAppAPIHostAddress = http://localhost:5288
 
-GET {{PetPalAppAPIHostAddress}}/weatherforecast/
+GET {{PetPalAppAPIHostAddress}}/User/
+Accept: application/json
+
+###
+
+POST {{PetPalAppAPIHostAddress}}/User/
+Content-Type: application/json
+
+{
+  "userName": "ExampleUser",
+  "userEmail": "user@example.com",
+  "userPassword": "examplepassword",
+  "userSupplier": true
+}
+
+###
+
+GET {{PetPalAppAPIHostAddress}}/User/ExampleUser
+Accept: application/json
+
+###
+
+PUT {{PetPalAppAPIHostAddress}}/User/ExampleUser
+Content-Type: application/json
+
+{
+  "userEmail": "modified@example.com",
+  "userPassword": "modifiedExamplePassword",
+  "userSupplier": false
+}
+
+###
+
+DELETE {{PetPalAppAPIHostAddress}}/User/ExampleUser
 Accept: application/json
 
 ###

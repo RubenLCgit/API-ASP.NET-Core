@@ -82,4 +82,9 @@ public class ProductRepository : IRepositoryGeneric<Product>
     EntityDictionary[key] = product;
     SaveChanges();
   }
+
+  public string GetKeyByValue(Dictionary<string, Product> dictionary, Product product)
+  {
+    throw new NotImplementedException();
+  }
 }

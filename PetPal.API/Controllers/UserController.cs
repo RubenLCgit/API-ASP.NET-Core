@@ -18,46 +18,53 @@ public class UserController : ControllerBase
 
 
   [HttpGet]
-  public ActionResult<Dictionary<string, UserCreateUpdateDTO>> GetAll()
+  public ActionResult<Dictionary<string, UserDTO>> GetAll()
   {
     try
     {
       var users = userService.GetAllUsers();
       return Ok(users);
     }
+    catch (KeyNotFoundException knfex)
+    {
+      return NotFound($"No users found: {knfex.Message}");
+    }
     catch (Exception ex)
     {
-      //logger.LogError(ex, "Error getting all users");
-      return BadRequest(ex.Message);
+      return BadRequest($"Error getting all users: {ex.Message}");
     }
   }
 
   [HttpGet("{username}")]
-  public ActionResult<UserCreateUpdateDTO> Get(string username)
+  public ActionResult<UserDTO> Get(string username)
   {
     try
     {
       var user = userService.GetUser(username);
       return Ok(user);
     }
-    catch (KeyNotFoundException)
+    catch (KeyNotFoundException knfex)
     {
-      return NotFound();
+      return NotFound($"User {username} not found: {knfex.Message}");
     }
     catch (Exception ex)
     {
-      return NotFound($"User {username} not found: {ex.Message}");
+      return BadRequest($"Error getting user: {ex.Message}");
     }
   }
 
   [HttpPost]
-  public ActionResult<User> Create([FromBody] UserCreateUpdateDTO userCreateUpdateDTO)
+  public ActionResult<User> Create([FromBody] UserDTO userDTO)
   {
     if (!ModelState.IsValid) return BadRequest(ModelState);
     try
     {
-      var user = userService.RegisterUser(userCreateUpdateDTO.UserName, userCreateUpdateDTO.UserEmail, userCreateUpdateDTO.UserPassword, userCreateUpdateDTO.UserSupplier);
+      var user = userService.RegisterUser(userDTO.UserName, userDTO.UserEmail, userDTO.UserPassword, userDTO.UserSupplier);
       return CreatedAtAction(nameof(Get), new { username = user.UserName }, user);
+    }
+    catch (System.Text.Json.JsonException jex)
+    {
+      return BadRequest($"Invalid JSON format: {jex.Message}");
     }
     catch (Exception ex)
     {
@@ -65,18 +72,26 @@ public class UserController : ControllerBase
     }
   }
 
-  [HttpPut]
-  public IActionResult Update(string username ,[FromBody] UserCreateUpdateDTO userCreateUpdateDTO)
+  [HttpPut("{username}")]
+  public IActionResult Update(string username ,[FromBody] UserUpdateDTO userUpdateDTO)
   {
     if (!ModelState.IsValid) return BadRequest(ModelState);
     try
     {
-      userService.UpdateUser(username, userCreateUpdateDTO);
-      return Ok(userCreateUpdateDTO);
+      userService.UpdateUser(username, userUpdateDTO);
+      return Ok(userUpdateDTO);
     }
     catch (KeyNotFoundException nfex)
     {
       return NotFound($"User {username} not found: {nfex.Message}");
+    }
+    catch (System.Text.Json.JsonException jex)
+    {
+      return BadRequest($"Invalid JSON format: {jex.Message}");
+    }
+    catch (Exception ex)
+    {
+      return BadRequest($" Error updating user data: {ex.Message}");
     }
   }
 
@@ -91,6 +106,10 @@ public class UserController : ControllerBase
     catch (KeyNotFoundException knfex)
     {
       return NotFound($"User {username} not found: {knfex.Message}");
+    }
+    catch (Exception ex)
+    {
+      return BadRequest($" Error deleting user: {ex.Message}");
     }
   }
 }
