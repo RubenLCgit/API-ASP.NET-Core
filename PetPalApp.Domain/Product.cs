@@ -2,7 +2,7 @@ namespace PetPalApp.Domain;
 
 public class Product
 { 
-  public string ProductId { get; set; }
+  public int ProductId { get; set; }
   public int UserId { get; set; }
   public string ProductType{ get; set; }
   public string ProductName { get; set; }

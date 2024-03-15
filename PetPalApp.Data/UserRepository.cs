@@ -6,51 +6,44 @@ namespace PetPalApp.Data;
 public class UserRepository : IRepositoryGeneric<User>
 {
 
-  public Dictionary<string, User> EntityDictionary = new Dictionary<string, User>();
+  public Dictionary<int, User> EntityDictionary = new Dictionary<int, User>();
   private readonly string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserRepository", "UsersRepository.json");
 
   public void AddEntity(User entity)
   {
-    Dictionary<String, User> listUsers;
-    
-    if (File.Exists(_filePath))
+    Dictionary<int, User> listUsers;
+    try
     {
-      listUsers = GetAllEntities();
-      EntityDictionary = listUsers;
+      if (File.Exists(_filePath))
+      {
+        listUsers = GetAllEntities();
+        EntityDictionary = listUsers;
+      }
+      EntityDictionary.Add(entity.UserId, entity);
+      SaveChanges();
     }
-    EntityDictionary.Add(entity.UserName, entity);
-    SaveChanges();
+    catch (Exception ex)
+    {
+      throw new Exception("Registration failed", ex);
+    }
+
   }
 
   public void DeleteEntity(User entity)
   {
     EntityDictionary = GetAllEntities();
-    EntityDictionary.Remove(GetKeyByValue(EntityDictionary,entity));
+    EntityDictionary.Remove(entity.UserId);
     SaveChanges();
   }
 
-  public string GetKeyByValue(Dictionary<string, User> dictionary, User user)
-{
-    string key = null;
-    foreach (var item in dictionary)
-    {
-      if (item.Value.UserName.Equals(user.UserName))
-      {
-        key = item.Key;
-        break;
-      }
-    }
-    return key;
-}
-
-  public Dictionary<string, User> GetAllEntities()
+  public Dictionary<int, User> GetAllEntities()
   {
-    Dictionary <String, User> dictionaryUsers = new Dictionary<string, User>();;
+    Dictionary<int, User> dictionaryUsers = new Dictionary<int, User>();
     String jsonString;
     if (File.Exists(_filePath))
     {
       jsonString = File.ReadAllText(_filePath);
-      dictionaryUsers = JsonSerializer.Deserialize<Dictionary<string, User>>(jsonString);
+      dictionaryUsers = JsonSerializer.Deserialize<Dictionary<int, User>>(jsonString);
     }
     else
     {
@@ -59,26 +52,19 @@ public class UserRepository : IRepositoryGeneric<User>
     return dictionaryUsers;
   }
 
-  public User GetByStringEntity(string name)
+  public User GetByIdEntity(int entityId)
   {
     var dictionaryCurrentUser = GetAllEntities();
     User user = null;
-    foreach (var item in dictionaryCurrentUser)
-    {
-      if (item.Value.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
-      {
-        user = item.Value;
-        break;
-      }
-    }
+    if (dictionaryCurrentUser.ContainsKey(entityId)) user = dictionaryCurrentUser[entityId];
     if (user == null) throw new KeyNotFoundException("User not found");
     return user;
   }
 
-  public void UpdateEntity(String key, User user)
+  public void UpdateEntity(int entityId, User user)
   {
     EntityDictionary = GetAllEntities();
-    EntityDictionary[key] = user;
+    EntityDictionary[entityId] = user;
     SaveChanges();
   }
 

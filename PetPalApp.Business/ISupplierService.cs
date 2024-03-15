@@ -5,13 +5,13 @@ namespace PetPalApp.Business;
 public interface ISupplierService
 {
   void RegisterService(int idUser, String nameUser, String type, String nameService, String description, decimal price, bool online);
-  Dictionary<string, Service> SearchService(string serviceType);
+  Dictionary<int, Service> SearchService(string serviceType);
 
-  public Dictionary<string, Service> GetAllServices();
+  public Dictionary<int, Service> GetAllServices();
 
-  Dictionary<string, Service> ShowMyServices(String key);
+  Dictionary<int, Service> ShowMyServices(int idUser);
 
-  public string PrintServices(Dictionary<string, Service> services);
+  public string PrintServices(Dictionary<int, Service> services);
 
-  void DeleteService(string userName, string serviceId);
+  void DeleteService(int userId, int serviceId);
 }

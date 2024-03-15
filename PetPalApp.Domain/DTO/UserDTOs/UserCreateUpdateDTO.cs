@@ -2,8 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PetPalApp.Domain;
 
-public class UserUpdateDTO
+public class UserCreateUpdateDTO
 {
+  [Required]
+  [MinLength(3, ErrorMessage = "The name must have at least 3 characters")]
+  public string UserName { get; set; }
   [Required]
   [EmailAddress(ErrorMessage = "The email must be a valid email")]
   public string UserEmail { get; set; }
@@ -13,11 +16,12 @@ public class UserUpdateDTO
   [Required]
   public bool UserSupplier { get; set; }
 
-  public UserUpdateDTO()
+  public UserCreateUpdateDTO()
   {
   }
-  public UserUpdateDTO(User user)
+  public UserCreateUpdateDTO(User user)
   {
+    UserName = user.UserName;
     UserEmail = user.UserEmail;
     UserPassword = user.UserPassword;
     UserSupplier = user.UserSupplier;

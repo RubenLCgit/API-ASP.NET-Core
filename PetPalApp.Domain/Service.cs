@@ -2,7 +2,7 @@ namespace PetPalApp.Domain;
 
 public class Service
 {
-  public string ServiceId { get; set; }//Se cambia a de int a string para poder reutilizar el metodo "GetAllEntities" del repositorio generico.
+  public int ServiceId { get; set; }
   public int UserId { get; set; }
   public string ServiceType{ get; set; }
   public string ServiceName { get; set; }

@@ -23,35 +23,33 @@ public class SupplierService : ISupplierService
     AssignId(service);
     service.UserId = idUser;
     Srepository.AddEntity(service);
-    var user = Urepository.GetByStringEntity(nameUser);
+    var user = Urepository.GetByIdEntity(idUser);
     user.ListServices.Add(service.ServiceId, service);
-    Urepository.UpdateEntity(nameUser, user);
+    Urepository.UpdateEntity(idUser, user);
   }
 
   private void AssignId(Service service)
   {
     var allServices = Srepository.GetAllEntities();
     int nextId = 0;
-    int newId;
     if (allServices == null || allServices.Count == 0)
     {
-      service.ServiceId = "1";
+      service.ServiceId = 1;
     }
     else
     {
       foreach (var item in allServices)
       {
-        if (int.Parse(item.Value.ServiceId) > nextId)
+        if (item.Value.ServiceId > nextId)
         {
-        nextId = int.Parse(item.Value.ServiceId);
+        nextId = item.Value.ServiceId;
         }
       }
-      newId = nextId + 1;
-      service.ServiceId = newId.ToString();
+      service.ServiceId = nextId + 1;
     }
   }
 
-  public string PrintServices(Dictionary<string, Service> services)
+  public string PrintServices(Dictionary<int, Service> services)
   {
     String allDataService = "";
     foreach (var item in services)
@@ -78,10 +76,10 @@ public class SupplierService : ISupplierService
     return allDataService;
   }
 
-  public Dictionary<string, Service> SearchService(string serviceType)
+  public Dictionary<int, Service> SearchService(string serviceType)
   {
     var allServices = Srepository.GetAllEntities();
-    Dictionary<string, Service> typeServices = new();
+    Dictionary<int, Service> typeServices = new();
     foreach (var item in allServices)
     {
       if (item.Value.ServiceType.IndexOf(serviceType,StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ServiceDescription.IndexOf(serviceType, StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ServiceName.IndexOf(serviceType, StringComparison.OrdinalIgnoreCase) >= 0)
@@ -92,24 +90,24 @@ public class SupplierService : ISupplierService
     return typeServices;
   }
 
-  public Dictionary<string, Service> GetAllServices()
+  public Dictionary<int, Service> GetAllServices()
   {
     var allServices = Srepository.GetAllEntities();
     
     return allServices;
   }
 
-  public Dictionary<string, Service> ShowMyServices(String key)
+  public Dictionary<int, Service> ShowMyServices(int idUser)
   {
-    Dictionary<string, Service> userServices = Urepository.GetByStringEntity(key).ListServices;
+    Dictionary<int, Service> userServices = Urepository.GetByIdEntity(idUser).ListServices;
 
     return userServices;
   }
 
-  public void DeleteService(string userName, string serviceId)
+  public void DeleteService(int userId, int serviceId)
   {
-    var service = Srepository.GetByStringEntity(serviceId);
-    User user = Urepository.GetByStringEntity(userName);
+    var service = Srepository.GetByIdEntity(serviceId);
+    User user = Urepository.GetByIdEntity(userId);
     if (user.ListServices.ContainsKey(serviceId))
     {
       Srepository.DeleteEntity(service);

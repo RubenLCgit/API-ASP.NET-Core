@@ -5,10 +5,9 @@ namespace PetPalApp.Data;
 public interface IRepositoryGeneric<T> where T : class
 {
   void AddEntity(T entity);
-  T GetByStringEntity(string key);
-  void UpdateEntity(string key, T entity);
+  T GetByIdEntity(int entityId);
+  void UpdateEntity(int entityId, T entity);
   void DeleteEntity(T entity);
   void SaveChanges();
-  Dictionary<string, T> GetAllEntities();
-  string GetKeyByValue(Dictionary<string, T> dictionary, T entity);
+  Dictionary<int, T> GetAllEntities();
 }

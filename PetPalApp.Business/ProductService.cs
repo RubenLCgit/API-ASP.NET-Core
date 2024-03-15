@@ -16,10 +16,10 @@ public class ProductService : IProductService
     Prepository = _prepository;
     Urepository = _urepository;
   }
-  public void DeleteProduct(string userName, string productId)
+  public void DeleteProduct(int userId, int productId)
   {
-    var product = Prepository.GetByStringEntity(productId);
-    User user = Urepository.GetByStringEntity(userName);
+    var product = Prepository.GetByIdEntity(productId);
+    User user = Urepository.GetByIdEntity(userId);
     if (user.ListProducts.ContainsKey(productId))
     {
       Prepository.DeleteEntity(product);
@@ -27,14 +27,14 @@ public class ProductService : IProductService
     else Console.WriteLine("The product you want to delete does not exist or belongs to another user.");
   }
 
-  public Dictionary<string, Product> GetAllProducts()
+  public Dictionary<int, Product> GetAllProducts()
   {
     var allProducts = Prepository.GetAllEntities();
     
     return allProducts;
   }
 
-  public string PrintProduct(Dictionary<string, Product> products)
+  public string PrintProduct(Dictionary<int, Product> products)
   {
     String allDataProducts = "";
     foreach (var item in products)
@@ -68,38 +68,36 @@ public class ProductService : IProductService
     AssignId(product);
     product.UserId = idUser;
     Prepository.AddEntity(product);
-    var user = Urepository.GetByStringEntity(nameUser);
+    var user = Urepository.GetByIdEntity(idUser);
     user.ListProducts.Add(product.ProductId, product);
-    Urepository.UpdateEntity(nameUser, user);
+    Urepository.UpdateEntity(idUser, user);
   }
 
   private void AssignId(Product product)
   {
     var allProducts = Prepository.GetAllEntities();
     int nextId = 0;
-    int newId;
     if (allProducts == null || allProducts.Count == 0)
     {
-      product.ProductId = "1";
+      product.ProductId = 1;
     }
     else
     {
       foreach (var item in allProducts)
       {
-        if (int.Parse(item.Value.ProductId) > nextId)
+        if (item.Value.ProductId > nextId)
         {
-        nextId = int.Parse(item.Value.ProductId);
+        nextId = item.Value.ProductId;
         }
       }
-      newId = nextId + 1;
-      product.ProductId = newId.ToString();
+      product.ProductId = nextId + 1;
     }
   }
 
-  public Dictionary<string, Product> SearchProduct(string productType)
+  public Dictionary<int, Product> SearchProduct(string productType)
   {
     var allProducts = Prepository.GetAllEntities();
-    Dictionary<string, Product> typeProducts = new();
+    Dictionary<int, Product> typeProducts = new();
     foreach (var item in allProducts)
     {
       if (item.Value.ProductType.IndexOf(productType,StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ProductDescription.IndexOf(productType, StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ProductName.IndexOf(productType, StringComparison.OrdinalIgnoreCase) >= 0)
@@ -110,9 +108,9 @@ public class ProductService : IProductService
     return typeProducts;
   }
 
-  public Dictionary<string, Product> ShowMyProducts(String key)
+  public Dictionary<int, Product> ShowMyProducts(int idUser)
   {
-    Dictionary<string, Product> userProducts = Urepository.GetByStringEntity(key).ListProducts;
+    Dictionary<int, Product> userProducts = Urepository.GetByIdEntity(idUser).ListProducts;
     return userProducts;
   }
 }
