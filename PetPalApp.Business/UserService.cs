@@ -28,8 +28,6 @@ public class UserService : IUserService
   public UserDTO GetUser(int userId)
   {
     var user = repository.GetByIdEntity(userId);
-    if (user == null) throw new KeyNotFoundException("User not found");
-
     return new UserDTO(user);
   }
 
@@ -73,11 +71,11 @@ public class UserService : IUserService
     return login;
   }
 
-  public User RegisterUser(string name, string email, string password, bool Supplier)
+  public User RegisterUser(UserCreateUpdateDTO userCreateUpdateDTO)
   {
     try
     {
-      User user = new(name, email, password, Supplier);
+      User user = new User(userCreateUpdateDTO.UserName, userCreateUpdateDTO.UserEmail, userCreateUpdateDTO.UserPassword, userCreateUpdateDTO.UserSupplier);
       AssignId(user);
       repository.AddEntity(user);
       return user;

@@ -59,7 +59,7 @@ public class UserController : ControllerBase
     if (!ModelState.IsValid) return BadRequest(ModelState);
     try
     {
-      var user = userService.RegisterUser(userCreateUpdateDTO.UserName, userCreateUpdateDTO.UserEmail, userCreateUpdateDTO.UserPassword, userCreateUpdateDTO.UserSupplier);
+      var user = userService.RegisterUser(userCreateUpdateDTO);
       return CreatedAtAction(nameof(Get), new { userId = user.UserId }, user);
     }
     catch (System.Text.Json.JsonException jex)

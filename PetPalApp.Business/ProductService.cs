@@ -16,22 +16,46 @@ public class ProductService : IProductService
     Prepository = _prepository;
     Urepository = _urepository;
   }
-  public void DeleteProduct(int userId, int productId)
+
+  public ProductDTO GetProduct(int productId)
   {
     var product = Prepository.GetByIdEntity(productId);
-    User user = Urepository.GetByIdEntity(userId);
+    return new ProductDTO(product);
+  }
+
+  public void UpdateProduct(int productId, ProductUpdateDTO productUpdateDTO)
+  {
+    var product = Prepository.GetByIdEntity(productId);
+    product.ProductType = productUpdateDTO.ProductType;
+    product.ProductName = productUpdateDTO.ProductName;
+    product.ProductDescription = productUpdateDTO.ProductDescription;
+    product.ProductPrice = productUpdateDTO.ProductPrice;
+    product.ProductOnline = productUpdateDTO.ProductOnline;
+    product.ProductStock = productUpdateDTO.ProductStock;
+    Prepository.UpdateEntity(productId, product);
+  }
+
+  public void DeleteProduct(int productId)
+  {
+    var product = Prepository.GetByIdEntity(productId);
+    User user = Urepository.GetByIdEntity(product.UserId);
     if (user.ListProducts.ContainsKey(productId))
     {
       Prepository.DeleteEntity(product);
     }
-    else Console.WriteLine("The product you want to delete does not exist or belongs to another user.");
+    else throw new KeyNotFoundException("The product you want to delete does not exist or belongs to another user.");
   }
 
-  public Dictionary<int, Product> GetAllProducts()
+  public Dictionary<int, ProductDTO> GetAllProducts()
   {
-    var allProducts = Prepository.GetAllEntities();
-    
-    return allProducts;
+    if (Prepository.GetAllEntities() == null) throw new KeyNotFoundException("No products found");
+
+    return ConvertToDictionaryDTO(Prepository.GetAllEntities());
+  }
+
+  private Dictionary<int, ProductDTO> ConvertToDictionaryDTO(Dictionary<int, Product> products)
+  {
+    return products.ToDictionary(pair => pair.Key, pair => new ProductDTO(pair.Value));
   }
 
   public string PrintProduct(Dictionary<int, Product> products)
@@ -62,18 +86,18 @@ public class ProductService : IProductService
     return allDataProducts;
   }
 
-  public void RegisterProduct(int idUser, string nameUser, string type, string nameProduct, string description, decimal price, bool online, int stock)
+  public Product RegisterProduct(ProductCreateDTO productCreateDTO)
   {
-    Product product = new(type, nameProduct, description, price, online, stock);
-    AssignId(product);
-    product.UserId = idUser;
+    var user = Urepository.GetByIdEntity(productCreateDTO.UserId);
+    Product product = new(user.UserId , productCreateDTO.ProductType, productCreateDTO.ProductName, productCreateDTO.ProductDescription, productCreateDTO.ProductPrice, productCreateDTO.ProductOnline, productCreateDTO.ProductStock);
+    AssignProductId(product);
     Prepository.AddEntity(product);
-    var user = Urepository.GetByIdEntity(idUser);
     user.ListProducts.Add(product.ProductId, product);
-    Urepository.UpdateEntity(idUser, user);
+    Urepository.UpdateEntity(productCreateDTO.UserId, user);
+    return product;
   }
 
-  private void AssignId(Product product)
+  private void AssignProductId(Product product)
   {
     var allProducts = Prepository.GetAllEntities();
     int nextId = 0;

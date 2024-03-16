@@ -40,7 +40,7 @@ public class ProductRepository : IRepositoryGeneric<Product>
     if (File.Exists(_filePath))
     {
      jsonString = File.ReadAllText(_filePath);
-      dictionaryProducts = JsonSerializer.Deserialize<Dictionary<int, Product>> (jsonString);
+     dictionaryProducts = JsonSerializer.Deserialize<Dictionary<int, Product>> (jsonString);
     }
     else
     {
@@ -52,7 +52,7 @@ public class ProductRepository : IRepositoryGeneric<Product>
   public Product GetByIdEntity(int entityId)
   {
     var dictionaryCurrentProduct = GetAllEntities();
-    Product product = new();
+    Product product = null;
     if (dictionaryCurrentProduct.ContainsKey(entityId)) product = dictionaryCurrentProduct[entityId];
     if (product == null) throw new KeyNotFoundException("Product not found");
     return product;

@@ -4,7 +4,7 @@ namespace PetPalApp.Business;
 
 public interface IUserService
 {
-  User RegisterUser(String userName, String userEmail, String userPassword, bool userSupplier);
+  User RegisterUser(UserCreateUpdateDTO userCreateUpdateDTO);
   void UpdateUser(int userId, UserCreateUpdateDTO userCreateUpdateDTO);
   void DeleteUser(int userId);
   void DeleteUserService(int userId, int serviceId);

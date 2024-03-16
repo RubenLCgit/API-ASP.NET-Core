@@ -16,8 +16,9 @@ public class Product
 
   public Product() { }
 
-  public Product(String type, String name, String description, decimal price, bool online, int stock)
+  public Product(int userId,String type, String name, String description, decimal price, bool online, int stock)
   {
+    UserId = userId;
     ProductType = type;
     ProductName = name;
     ProductDescription = description;
