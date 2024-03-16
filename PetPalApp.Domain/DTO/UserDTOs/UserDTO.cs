@@ -10,6 +10,10 @@ public class UserDTO
   public bool UserSupplier { get; set; }
   public double UserRating { get; set; }
 
+  public List<int> ListIdServices { get; set; }
+
+  public List<int> ListIdProducts { get; set; }
+
 
   public UserDTO()
   {
@@ -23,5 +27,16 @@ public class UserDTO
     UserRegisterDate = user.UserRegisterDate;
     UserSupplier = user.UserSupplier;
     UserRating = user.UserRating;
+    ListIdServices = new List<int>();
+    ListIdProducts = new List<int>();
+
+    if (user.ListServices != null)
+    {
+      ListIdServices.AddRange(user.ListServices.Keys);
+    }
+    if (user.ListProducts != null)
+    {
+      ListIdProducts.AddRange(user.ListProducts.Keys);
+    }
   }
 }

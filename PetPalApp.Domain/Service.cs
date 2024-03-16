@@ -15,8 +15,9 @@ public class Service
 
   public Service() { }
 
-  public Service(String type, String name, String description, decimal price, bool online)
+  public Service(int userId ,String type, String name, String description, decimal price, bool online)
   {
+    UserId = userId;
     ServiceType = type;
     ServiceName = name;
     ServiceDescription = description;

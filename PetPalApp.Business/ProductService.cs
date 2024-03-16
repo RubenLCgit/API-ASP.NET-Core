@@ -42,6 +42,8 @@ public class ProductService : IProductService
     if (user.ListProducts.ContainsKey(productId))
     {
       Prepository.DeleteEntity(product);
+      user.ListProducts.Remove(productId);
+      Urepository.UpdateEntity(user.UserId, user);
     }
     else throw new KeyNotFoundException("The product you want to delete does not exist or belongs to another user.");
   }
@@ -49,7 +51,6 @@ public class ProductService : IProductService
   public Dictionary<int, ProductDTO> GetAllProducts()
   {
     if (Prepository.GetAllEntities() == null) throw new KeyNotFoundException("No products found");
-
     return ConvertToDictionaryDTO(Prepository.GetAllEntities());
   }
 

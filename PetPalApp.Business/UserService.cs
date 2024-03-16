@@ -7,10 +7,15 @@ namespace PetPalApp.Business;
 public class UserService : IUserService
 {
   private readonly IRepositoryGeneric<User> repository;
+  private readonly IRepositoryGeneric<Product> productRepository;
 
-  public UserService(IRepositoryGeneric<User> _repository)
+  private readonly IRepositoryGeneric<Service> serviceRepository;
+
+  public UserService(IRepositoryGeneric<User> _repository, IRepositoryGeneric<Product> _productRepository, IRepositoryGeneric<Service> _serviceRepository)
   {
     repository = _repository;
+    productRepository = _productRepository;
+    serviceRepository = _serviceRepository;
   }
 
   public Dictionary<int, UserDTO> GetAllUsers()
@@ -151,21 +156,14 @@ public class UserService : IUserService
   public void DeleteUser(int userId)
   {
     var user = repository.GetByIdEntity(userId);
+    foreach (var productId in user.ListProducts.Keys.ToList())
+    {
+      productRepository.DeleteEntity(productRepository.GetByIdEntity(productId));
+    }
+    foreach (var serviceId in user.ListServices.Keys.ToList())
+    {
+      serviceRepository.DeleteEntity(serviceRepository.GetByIdEntity(serviceId));
+    }
     repository.DeleteEntity(user);
-  }
-
-  public void DeleteUserService(int userId, int serviceId)
-  {
-    var user = repository.GetByIdEntity(userId);
-    user.ListServices.Remove(serviceId);
-    repository.UpdateEntity(userId, user);
-  }
-
-  public void DeleteUserProduct(int userId, int productId)
-  {
-    //var allUsers = repository.GetAllEntities();
-    var user = repository.GetByIdEntity(userId);
-    user.ListProducts.Remove(productId);
-    repository.UpdateEntity(userId, user);
   }
 }

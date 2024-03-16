@@ -5,30 +5,47 @@ using PetPalApp.Domain;
 
 namespace PetPalApp.Business;
 
-public class SupplierService : ISupplierService
+public class ServiceService : IServiceService
 {
   
   private IRepositoryGeneric<Service> Srepository;
   private IRepositoryGeneric<User> Urepository;
 
-  public SupplierService(IRepositoryGeneric<Service> _srepository, IRepositoryGeneric<User> _urepository)
+  public ServiceService(IRepositoryGeneric<Service> _srepository, IRepositoryGeneric<User> _urepository)
   {
     Srepository = _srepository;
     Urepository = _urepository;
   }
 
-  public void RegisterService(int idUser, String nameUser, String type, String nameService, string description, decimal price, bool online)
+  public ServiceDTO GetService(int serviceId)
   {
-    Service service = new(type, nameService, description, price, online);
-    AssignId(service);
-    service.UserId = idUser;
-    Srepository.AddEntity(service);
-    var user = Urepository.GetByIdEntity(idUser);
-    user.ListServices.Add(service.ServiceId, service);
-    Urepository.UpdateEntity(idUser, user);
+    var service = Srepository.GetByIdEntity(serviceId);
+    return new ServiceDTO(service);
   }
 
-  private void AssignId(Service service)
+  public void UpdateService(int serviceId, ServiceUpdateDTO serviceUpdateDTO)
+  {
+    var service = Srepository.GetByIdEntity(serviceId);
+    service.ServiceType = serviceUpdateDTO.ServiceType;
+    service.ServiceName = serviceUpdateDTO.ServiceName;
+    service.ServiceDescription = serviceUpdateDTO.ServiceDescription;
+    service.ServicePrice = serviceUpdateDTO.ServicePrice;
+    service.ServiceOnline = serviceUpdateDTO.ServiceOnline;
+    Srepository.UpdateEntity(serviceId, service);
+  }
+
+  public Service RegisterService(ServiceCreateDTO serviceCreateDTO)
+  {
+    var user = Urepository.GetByIdEntity(serviceCreateDTO.UserId);
+    Service service = new (user.UserId, serviceCreateDTO.ServiceType, serviceCreateDTO.ServiceName, serviceCreateDTO.ServiceDescription, serviceCreateDTO.ServicePrice, serviceCreateDTO.ServiceOnline);
+    AssignServiceId(service);
+    Srepository.AddEntity(service);
+    user.ListServices.Add(service.ServiceId, service);
+    Urepository.UpdateEntity(serviceCreateDTO.UserId, user);
+    return service;
+  }
+
+  private void AssignServiceId(Service service)
   {
     var allServices = Srepository.GetAllEntities();
     int nextId = 0;
@@ -90,11 +107,15 @@ public class SupplierService : ISupplierService
     return typeServices;
   }
 
-  public Dictionary<int, Service> GetAllServices()
+  public Dictionary<int, ServiceDTO> GetAllServices()
   {
-    var allServices = Srepository.GetAllEntities();
-    
-    return allServices;
+    if (Srepository.GetAllEntities() == null) throw new KeyNotFoundException("No services found.");
+    return ConvertToDictionaryDTO(Srepository.GetAllEntities());
+  }
+
+  private Dictionary<int, ServiceDTO> ConvertToDictionaryDTO(Dictionary<int, Service> services)
+  {
+    return services.ToDictionary(pair => pair.Key, pair => new ServiceDTO(pair.Value));
   }
 
   public Dictionary<int, Service> ShowMyServices(int idUser)
@@ -104,14 +125,16 @@ public class SupplierService : ISupplierService
     return userServices;
   }
 
-  public void DeleteService(int userId, int serviceId)
+  public void DeleteService(int serviceId)
   {
     var service = Srepository.GetByIdEntity(serviceId);
-    User user = Urepository.GetByIdEntity(userId);
+    User user = Urepository.GetByIdEntity(service.UserId);
     if (user.ListServices.ContainsKey(serviceId))
     {
       Srepository.DeleteEntity(service);
+      user.ListServices.Remove(serviceId);
+      Urepository.UpdateEntity(user.UserId, user);
     }
-    else Console.WriteLine("The service you want to delete does not exist or belongs to another user.");
+    else throw new KeyNotFoundException("The service you want to delete does not exist or belongs to another user.");
   }
 }
