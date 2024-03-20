@@ -61,19 +61,19 @@ public class UserService : IUserService
     return userExist;
   }
 
-  public bool CheckLogin(string name, string password)
+  public User CheckLogin(string name, string password)
   {
-    bool login = false;
+    User user = null;
     var allUsers = repository.GetAllEntities();
     foreach (var item in allUsers)
     {
       if (item.Value.UserName.Equals(name, StringComparison.OrdinalIgnoreCase) && item.Value.UserPassword.Equals(password, StringComparison.OrdinalIgnoreCase))
       {
-        login = true;
+        user = item.Value;
         break;
       }
     }
-    return login;
+    return user;
   }
 
   public User RegisterUser(UserCreateUpdateDTO userCreateUpdateDTO)

@@ -1,9 +1,10 @@
 using PetPalApp.Domain;
 using PetPalApp.Business;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PetPal.API.Controllers;
-
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 
