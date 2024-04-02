@@ -1,2 +1,2 @@
 # PetPal-Aplicacion.NET
-Aplicación de Consola .NET - 3 layer architecture - Serialización de JSON  - Docker
+API ASP.NET Core - JWT - 3 layer architecture - Serialización de JSON  - Docker
