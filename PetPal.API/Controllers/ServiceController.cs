@@ -2,6 +2,7 @@ using PetPalApp.Domain;
 using PetPalApp.Business;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace PetPal.API.Controllers;
 [Authorize]
@@ -60,7 +61,7 @@ public class ServiceController : ControllerBase
     if (!ModelState.IsValid) return BadRequest(ModelState);
     try
     {
-      var service = serviceService.RegisterService(serviceCreateDTO);
+      var service = serviceService.RegisterService(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, serviceCreateDTO);
       return CreatedAtAction(nameof(Get), new { serviceId = service.ServiceId }, service);
     }
     catch (Exception ex)
@@ -75,12 +76,16 @@ public class ServiceController : ControllerBase
     if (!ModelState.IsValid) return BadRequest(ModelState);
     try
     {
-      serviceService.UpdateService(serviceId, serviceUpdateDTO);
+      serviceService.UpdateService(User.FindFirst(ClaimTypes.Role)?.Value, User.FindFirst(ClaimTypes.NameIdentifier)?.Value, serviceId, serviceUpdateDTO);
       return Ok(serviceUpdateDTO);
     }
     catch (KeyNotFoundException knfex)
     {
       return NotFound($"Service {serviceId} not found: {knfex.Message}");
+    }
+    catch (UnauthorizedAccessException uaex)
+    {
+      return Unauthorized(uaex.Message);
     }
     catch (Exception ex)
     {
@@ -93,12 +98,16 @@ public class ServiceController : ControllerBase
   {
     try
     {
-      serviceService.DeleteService(serviceId);
+      serviceService.DeleteService(User.FindFirst(ClaimTypes.Role)?.Value, User.FindFirst(ClaimTypes.NameIdentifier)?.Value, serviceId);
       return NoContent();
     }
     catch (KeyNotFoundException knfex)
     {
       return NotFound($"Service {serviceId} not found: {knfex.Message}");
+    }
+    catch (UnauthorizedAccessException uaex)
+    {
+      return Unauthorized(uaex.Message);
     }
     catch (Exception ex)
     {

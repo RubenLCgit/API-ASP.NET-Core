@@ -1,6 +1,8 @@
 using PetPalApp.Domain;
 using PetPalApp.Business;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace PetPal.API.Controllers;
 
@@ -16,36 +18,44 @@ public class UserController : ControllerBase
     logger = _logger;
   }
 
-
+  [Authorize]
   [HttpGet]
   public ActionResult<Dictionary<int, UserDTO>> GetAll()
   {
     try
     {
-      var users = userService.GetAllUsers();
+      var users = userService.GetAllUsers(User.FindFirst(ClaimTypes.Role)?.Value);
       return Ok(users);
     }
     catch (KeyNotFoundException knfex)
     {
       return NotFound($"No users found: {knfex.Message}");
     }
+    catch (UnauthorizedAccessException uaex)
+    {
+      return Unauthorized(uaex.Message);
+    }
     catch (Exception ex)
     {
       return BadRequest($"Error getting all users: {ex.Message}");
     }
   }
-
+  [Authorize]
   [HttpGet("{userId}")]
   public ActionResult<UserDTO> Get(int userId)
   {
     try
     {
-      var user = userService.GetUser(userId);
+      var user = userService.GetUser(User.FindFirst(ClaimTypes.Role)?.Value, User.FindFirst(ClaimTypes.NameIdentifier)?.Value, userId);
       return Ok(user);
     }
     catch (KeyNotFoundException knfex)
     {
       return NotFound($"User {userId} not found: {knfex.Message}");
+    }
+    catch (UnauthorizedAccessException uaex)
+    {
+      return Unauthorized(uaex.Message);
     }
     catch (Exception ex)
     {
@@ -71,14 +81,14 @@ public class UserController : ControllerBase
       return BadRequest(ex.Message);
     }
   }
-
+  [Authorize]
   [HttpPut("{userId}")]
   public IActionResult Update(int userId, [FromBody] UserCreateUpdateDTO userCreateUpdateDTO)
   {
     if (!ModelState.IsValid) return BadRequest(ModelState);
     try
     {
-      userService.UpdateUser(userId, userCreateUpdateDTO);
+      userService.UpdateUser(User.FindFirst(ClaimTypes.Role)?.Value, User.FindFirst(ClaimTypes.NameIdentifier)?.Value, userId, userCreateUpdateDTO);
       return Ok(userCreateUpdateDTO);
     }
     catch (KeyNotFoundException nfex)
@@ -89,27 +99,37 @@ public class UserController : ControllerBase
     {
       return BadRequest($"Invalid JSON format: {jex.Message}");
     }
+    catch (UnauthorizedAccessException uaex)
+    {
+      return Unauthorized(uaex.Message);
+    }
     catch (Exception ex)
     {
       return BadRequest($" Error updating user data: {ex.Message}");
     }
   }
-
+  [Authorize]
   [HttpDelete("{userId}")]
   public IActionResult Delete(int userId)
   {
     try
     {
-      userService.DeleteUser(userId);
+      userService.DeleteUser(User.FindFirst(ClaimTypes.Role)?.Value, User.FindFirst(ClaimTypes.NameIdentifier)?.Value, userId);
       return NoContent();
     }
     catch (KeyNotFoundException knfex)
     {
       return NotFound($"User {userId} not found: {knfex.Message}");
     }
+    catch (UnauthorizedAccessException uaex)
+    {
+      return Unauthorized(uaex.Message);
+    }
     catch (Exception ex)
     {
       return BadRequest($" Error deleting user: {ex.Message}");
     }
   }
+
+  
 }

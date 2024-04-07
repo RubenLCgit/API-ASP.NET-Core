@@ -5,9 +5,6 @@ namespace PetPalApp.Domain;
 public class ServiceCreateDTO
 {
   [Required]
-  [Range(1, int.MaxValue, ErrorMessage = "The user id must be greater than 0")]
-  public int UserId { get; set; }
-  [Required]
   [MinLength(3, ErrorMessage = "The service type name must be at least 3 characters long")]
   public string ServiceType { get; set; }
   [Required]
@@ -28,7 +25,6 @@ public class ServiceCreateDTO
 
   public ServiceCreateDTO(Service service)
   {
-    UserId = service.UserId;
     ServiceType = service.ServiceType;
     ServiceName = service.ServiceName;
     ServiceDescription = service.ServiceDescription;

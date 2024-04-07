@@ -38,6 +38,7 @@ public class AuthController : ControllerBase
         {
           Subject = new ClaimsIdentity(new Claim[]
           {
+            new Claim(ClaimTypes.Role, user.UserRole),
             new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
             new Claim(ClaimTypes.Name, user.UserName),
           }),

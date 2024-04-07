@@ -5,9 +5,6 @@ namespace PetPalApp.Domain;
 public class ProductCreateDTO
 {
   [Required]
-  [Range(1, int.MaxValue, ErrorMessage = "The user id must be greater than 0")]
-  public int UserId { get; set; }
-  [Required]
   [MinLength(3, ErrorMessage = "The product type name must be at least 3 characters long")]
   public string ProductType { get; set; }
   [Required]
@@ -32,7 +29,6 @@ public class ProductCreateDTO
 
   public ProductCreateDTO(Product product)
   {
-    UserId = product.UserId;
     ProductType = product.ProductType;
     ProductName = product.ProductName;
     ProductDescription = product.ProductDescription;

@@ -4,7 +4,7 @@ namespace PetPalApp.Business;
 
 public interface IServiceService
 {
-  Service RegisterService(ServiceCreateDTO serviceCreateDTO);
+  Service RegisterService(string tokenId, ServiceCreateDTO serviceCreateDTO);
   Dictionary<int, Service> SearchService(string serviceType);
 
   public Dictionary<int, ServiceDTO> GetAllServices();
@@ -13,9 +13,9 @@ public interface IServiceService
 
   public string PrintServices(Dictionary<int, Service> services);
 
-  void DeleteService(int serviceId);
+  void DeleteService(string tokenRole, string tokenId, int serviceId);
 
   ServiceDTO GetService(int serviceId);
 
-  void UpdateService(int serviceId, ServiceUpdateDTO serviceUpdateDTO);
+  void UpdateService(string tokenRole, string tokenId, int serviceId, ServiceUpdateDTO serviceUpdateDTO);
 }

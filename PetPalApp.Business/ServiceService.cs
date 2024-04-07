@@ -23,25 +23,33 @@ public class ServiceService : IServiceService
     return new ServiceDTO(service);
   }
 
-  public void UpdateService(int serviceId, ServiceUpdateDTO serviceUpdateDTO)
+  public void UpdateService(string tokenRole, string tokenId, int serviceId, ServiceUpdateDTO serviceUpdateDTO)
   {
     var service = Srepository.GetByIdEntity(serviceId);
-    service.ServiceType = serviceUpdateDTO.ServiceType;
-    service.ServiceName = serviceUpdateDTO.ServiceName;
-    service.ServiceDescription = serviceUpdateDTO.ServiceDescription;
-    service.ServicePrice = serviceUpdateDTO.ServicePrice;
-    service.ServiceOnline = serviceUpdateDTO.ServiceOnline;
-    Srepository.UpdateEntity(serviceId, service);
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, service.UserId))
+    {
+      service.ServiceType = serviceUpdateDTO.ServiceType;
+      service.ServiceName = serviceUpdateDTO.ServiceName;
+      service.ServiceDescription = serviceUpdateDTO.ServiceDescription;
+      service.ServicePrice = serviceUpdateDTO.ServicePrice;
+      service.ServiceOnline = serviceUpdateDTO.ServiceOnline;
+      Srepository.UpdateEntity(serviceId, service);
+      var user = Urepository.GetByIdEntity(service.UserId);
+      user.ListServices[serviceId] = service;
+      Urepository.UpdateEntity(user.UserId, user);
+    }
+    else throw new UnauthorizedAccessException("You do not have permissions to modify another user's service.");
   }
 
-  public Service RegisterService(ServiceCreateDTO serviceCreateDTO)
+  public Service RegisterService(string tokenId, ServiceCreateDTO serviceCreateDTO)
   {
-    var user = Urepository.GetByIdEntity(serviceCreateDTO.UserId);
+    int userId = int.Parse(tokenId);
+    var user = Urepository.GetByIdEntity(userId);
     Service service = new (user.UserId, serviceCreateDTO.ServiceType, serviceCreateDTO.ServiceName, serviceCreateDTO.ServiceDescription, serviceCreateDTO.ServicePrice, serviceCreateDTO.ServiceOnline);
     AssignServiceId(service);
     Srepository.AddEntity(service);
     user.ListServices.Add(service.ServiceId, service);
-    Urepository.UpdateEntity(serviceCreateDTO.UserId, user);
+    Urepository.UpdateEntity(userId, user);
     return service;
   }
 
@@ -125,16 +133,20 @@ public class ServiceService : IServiceService
     return userServices;
   }
 
-  public void DeleteService(int serviceId)
+  public void DeleteService(string tokenRole, string tokenId, int serviceId)
   {
     var service = Srepository.GetByIdEntity(serviceId);
-    User user = Urepository.GetByIdEntity(service.UserId);
-    if (user.ListServices.ContainsKey(serviceId))
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, service.UserId))
     {
-      Srepository.DeleteEntity(service);
-      user.ListServices.Remove(serviceId);
-      Urepository.UpdateEntity(user.UserId, user);
+      User user = Urepository.GetByIdEntity(service.UserId);
+      if (user.ListServices.ContainsKey(serviceId))
+      {
+        Srepository.DeleteEntity(service);
+        user.ListServices.Remove(serviceId);
+        Urepository.UpdateEntity(user.UserId, user);
+      }
+      else throw new KeyNotFoundException("The service you want to delete does not exist or belongs to another user.");
     }
-    else throw new KeyNotFoundException("The service you want to delete does not exist or belongs to another user.");
+    else throw new UnauthorizedAccessException("You do not have permissions to delete another user's service.");
   }
 }

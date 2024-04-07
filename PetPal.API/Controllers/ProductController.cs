@@ -1,9 +1,13 @@
 using PetPalApp.Domain;
 using PetPalApp.Business;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace PetPal.API.Controllers;
 
+
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class ProductController : ControllerBase
@@ -59,7 +63,7 @@ public class ProductController : ControllerBase
     if (!ModelState.IsValid) return BadRequest(ModelState);
     try
     {
-      var product = productService.RegisterProduct(productCreateDTO);
+      var product = productService.RegisterProduct(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, productCreateDTO);
       return CreatedAtAction(nameof(Get), new { productId = product.ProductId }, product);
     }
     catch (System.Text.Json.JsonException jex)
@@ -78,7 +82,7 @@ public class ProductController : ControllerBase
     if (!ModelState.IsValid) return BadRequest(ModelState);
     try
     {
-      productService.UpdateProduct(productId, productUpdateDTO);
+      productService.UpdateProduct(User.FindFirst(ClaimTypes.Role)?.Value, User.FindFirst(ClaimTypes.NameIdentifier)?.Value, productId, productUpdateDTO);
       return Ok(productUpdateDTO);
     }
     catch (KeyNotFoundException nfex)
@@ -88,6 +92,10 @@ public class ProductController : ControllerBase
     catch (System.Text.Json.JsonException jex)
     {
       return BadRequest($"Invalid JSON format: {jex.Message}");
+    }
+    catch (UnauthorizedAccessException uaex)
+    {
+      return Unauthorized(uaex.Message);
     }
     catch (Exception ex)
     {
@@ -100,12 +108,16 @@ public class ProductController : ControllerBase
   {
     try
     {
-      productService.DeleteProduct(productId);
+      productService.DeleteProduct(User.FindFirst(ClaimTypes.Role)?.Value, User.FindFirst(ClaimTypes.NameIdentifier)?.Value, productId);
       return NoContent();
     }
     catch (KeyNotFoundException knfex)
     {
       return NotFound($"Product {productId} not found: {knfex.Message}");
+    }
+    catch (UnauthorizedAccessException uaex)
+    {
+      return Unauthorized(uaex.Message);
     }
     catch (Exception ex)
     {

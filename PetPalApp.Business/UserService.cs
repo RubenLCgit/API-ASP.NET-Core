@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using PetPalApp.Data;
 using PetPalApp.Domain;
+using System.Security.Claims;
 
 namespace PetPalApp.Business;
 
@@ -18,8 +19,9 @@ public class UserService : IUserService
     serviceRepository = _serviceRepository;
   }
 
-  public Dictionary<int, UserDTO> GetAllUsers()
+  public Dictionary<int, UserDTO> GetAllUsers(string userRole)
   {
+    if (userRole != "Admin") throw new UnauthorizedAccessException("Utility only available for administrator");
     if (repository.GetAllEntities() == null) throw new KeyNotFoundException("No users found");
 
     return ConvertToDictionaryDTO(repository.GetAllEntities());
@@ -30,20 +32,25 @@ public class UserService : IUserService
     return users.ToDictionary(pair => pair.Key, pair => new UserDTO(pair.Value));
   }
 
-  public UserDTO GetUser(int userId)
+  public UserDTO GetUser(string tokenRole , string tokenId, int userId)
   {
     var user = repository.GetByIdEntity(userId);
-    return new UserDTO(user);
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, userId)) return new UserDTO(user);
+    else throw new UnauthorizedAccessException("You do not have permissions to access the requested user's information.");
   }
 
-  public void UpdateUser(int userId, UserCreateUpdateDTO userCreateUpdateDTO)
+  public void UpdateUser(string tokenRole, string tokenId, int userId, UserCreateUpdateDTO userCreateUpdateDTO)
   {
-    var user = repository.GetByIdEntity(userId);
-    user.UserName = userCreateUpdateDTO.UserName;
-    user.UserEmail = userCreateUpdateDTO.UserEmail;
-    user.UserPassword = userCreateUpdateDTO.UserPassword;
-    user.UserSupplier = userCreateUpdateDTO.UserSupplier;
-    repository.UpdateEntity(userId, user);
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, userId))
+    {
+      var user = repository.GetByIdEntity(userId);
+      user.UserName = userCreateUpdateDTO.UserName;
+      user.UserEmail = userCreateUpdateDTO.UserEmail;
+      user.UserPassword = userCreateUpdateDTO.UserPassword;
+      user.UserSupplier = userCreateUpdateDTO.UserSupplier;
+      repository.UpdateEntity(userId, user);
+    }
+    else throw new UnauthorizedAccessException("You do not have permissions to modify another user's data.");
   }
 
   public bool checkUserExist(string name = null, string email = null)
@@ -82,6 +89,7 @@ public class UserService : IUserService
     {
       User user = new User(userCreateUpdateDTO.UserName, userCreateUpdateDTO.UserEmail, userCreateUpdateDTO.UserPassword, userCreateUpdateDTO.UserSupplier);
       AssignId(user);
+      AssignRole(user);
       repository.AddEntity(user);
       return user;
     }
@@ -112,18 +120,10 @@ public class UserService : IUserService
     }
   }
 
-  /*public int GetIdUser(string name)
+  private void AssignRole(User user)
   {
-    var allUsers = repository.GetAllEntities();
-    foreach (var item in allUsers)
-    {
-      if (item.Key.Equals(name, StringComparison.OrdinalIgnoreCase))
-      {
-        return item.Value.UserId;
-      }
-    }
-    return 0;
-  }*/
+    user.UserRole = user.UserId == 1 ? "Admin" : "Client";
+  }
 
   public string ShowAccount(int userId)
   {
@@ -153,17 +153,22 @@ public class UserService : IUserService
     return Regex.IsMatch(email, regularExpresionEmail);
   }
 
-  public void DeleteUser(int userId)
+  public void DeleteUser(string tokenRole, string tokenId, int userId)
   {
-    var user = repository.GetByIdEntity(userId);
-    foreach (var productId in user.ListProducts.Keys.ToList())
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, userId))
     {
-      productRepository.DeleteEntity(productRepository.GetByIdEntity(productId));
+      var user = repository.GetByIdEntity(userId);
+      if (user.UserRole == "Admin") throw new UnauthorizedAccessException("Cannot delete Administrator account.");
+      foreach (var productId in user.ListProducts.Keys.ToList())
+      {
+        productRepository.DeleteEntity(productRepository.GetByIdEntity(productId));
+      }
+      foreach (var serviceId in user.ListServices.Keys.ToList())
+      {
+        serviceRepository.DeleteEntity(serviceRepository.GetByIdEntity(serviceId));
+      }
+      repository.DeleteEntity(user);
     }
-    foreach (var serviceId in user.ListServices.Keys.ToList())
-    {
-      serviceRepository.DeleteEntity(serviceRepository.GetByIdEntity(serviceId));
-    }
-    repository.DeleteEntity(user);
+    else throw new UnauthorizedAccessException("You do not have permissions to delete another user's account.");
   }
 }

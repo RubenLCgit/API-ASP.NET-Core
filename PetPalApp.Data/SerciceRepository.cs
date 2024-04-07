@@ -54,7 +54,7 @@ public class ServiceRepository : IRepositoryGeneric<Service>
     var dictionaryCurrentService = GetAllEntities();
     Service service = null;
     if (dictionaryCurrentService.ContainsKey(entityId)) service = dictionaryCurrentService[entityId];
-    if (service == null) throw new KeyNotFoundException("User not found");
+    if (service == null) throw new KeyNotFoundException("Service not found");
     return service;
   }
 

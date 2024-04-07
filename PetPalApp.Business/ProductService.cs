@@ -23,29 +23,40 @@ public class ProductService : IProductService
     return new ProductDTO(product);
   }
 
-  public void UpdateProduct(int productId, ProductUpdateDTO productUpdateDTO)
+  public void UpdateProduct(string tokenRole, string tokenId, int productId, ProductUpdateDTO productUpdateDTO)
   {
     var product = Prepository.GetByIdEntity(productId);
-    product.ProductType = productUpdateDTO.ProductType;
-    product.ProductName = productUpdateDTO.ProductName;
-    product.ProductDescription = productUpdateDTO.ProductDescription;
-    product.ProductPrice = productUpdateDTO.ProductPrice;
-    product.ProductOnline = productUpdateDTO.ProductOnline;
-    product.ProductStock = productUpdateDTO.ProductStock;
-    Prepository.UpdateEntity(productId, product);
-  }
-
-  public void DeleteProduct(int productId)
-  {
-    var product = Prepository.GetByIdEntity(productId);
-    User user = Urepository.GetByIdEntity(product.UserId);
-    if (user.ListProducts.ContainsKey(productId))
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, product.UserId))
     {
-      Prepository.DeleteEntity(product);
-      user.ListProducts.Remove(productId);
+      product.ProductType = productUpdateDTO.ProductType;
+      product.ProductName = productUpdateDTO.ProductName;
+      product.ProductDescription = productUpdateDTO.ProductDescription;
+      product.ProductPrice = productUpdateDTO.ProductPrice;
+      product.ProductOnline = productUpdateDTO.ProductOnline;
+      product.ProductStock = productUpdateDTO.ProductStock;
+      Prepository.UpdateEntity(productId, product);
+      var user = Urepository.GetByIdEntity(product.UserId);
+      user.ListProducts[productId] = product;
       Urepository.UpdateEntity(user.UserId, user);
     }
-    else throw new KeyNotFoundException("The product you want to delete does not exist or belongs to another user.");
+    else throw new UnauthorizedAccessException("You do not have permissions to modify another user's product.");
+  }
+
+  public void DeleteProduct(string tokenRole, string tokenId, int productId)
+  {
+    var product = Prepository.GetByIdEntity(productId);
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, product.UserId))
+    {
+      User user = Urepository.GetByIdEntity(product.UserId);
+      if (user.ListProducts.ContainsKey(productId))
+      {
+        Prepository.DeleteEntity(product);
+        user.ListProducts.Remove(productId);
+        Urepository.UpdateEntity(user.UserId, user);
+      }
+      else throw new KeyNotFoundException("The product you want to delete does not exist or belongs to another user.");
+    }
+    else throw new UnauthorizedAccessException("You do not have permissions to delete another user's product.");
   }
 
   public Dictionary<int, ProductDTO> GetAllProducts()
@@ -87,14 +98,15 @@ public class ProductService : IProductService
     return allDataProducts;
   }
 
-  public Product RegisterProduct(ProductCreateDTO productCreateDTO)
+  public Product RegisterProduct(string tokenId, ProductCreateDTO productCreateDTO)
   {
-    var user = Urepository.GetByIdEntity(productCreateDTO.UserId);
+    int userId = int.Parse(tokenId);
+    var user = Urepository.GetByIdEntity(userId);
     Product product = new(user.UserId , productCreateDTO.ProductType, productCreateDTO.ProductName, productCreateDTO.ProductDescription, productCreateDTO.ProductPrice, productCreateDTO.ProductOnline, productCreateDTO.ProductStock);
     AssignProductId(product);
     Prepository.AddEntity(product);
     user.ListProducts.Add(product.ProductId, product);
-    Urepository.UpdateEntity(productCreateDTO.UserId, user);
+    Urepository.UpdateEntity(userId, user);
     return product;
   }
 
