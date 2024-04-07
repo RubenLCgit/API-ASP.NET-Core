@@ -5,7 +5,7 @@ namespace PetPalApp.Business;
 public interface IProductService
 {
   Product RegisterProduct(string tokenId, ProductCreateDTO productCreateDTO);
-  Dictionary<int, Product> SearchProduct(string ProductType);
+  List<ProductDTO> SearchProduct(string searchedWord, string sortBy, string sortOrder);
 
   public Dictionary<int, ProductDTO> GetAllProducts();
 

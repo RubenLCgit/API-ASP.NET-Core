@@ -101,18 +101,42 @@ public class ServiceService : IServiceService
     return allDataService;
   }
 
-  public Dictionary<int, Service> SearchService(string serviceType)
+  public List<ServiceDTO> SearchService(string searchedWord,string sortBy,string sortOrder)
   {
-    var allServices = Srepository.GetAllEntities();
-    Dictionary<int, Service> typeServices = new();
-    foreach (var item in allServices)
+    var query = Srepository.GetAllEntities().AsQueryable();
+    if (!string.IsNullOrWhiteSpace(searchedWord))
     {
-      if (item.Value.ServiceType.IndexOf(serviceType,StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ServiceDescription.IndexOf(serviceType, StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ServiceName.IndexOf(serviceType, StringComparison.OrdinalIgnoreCase) >= 0)
-      {
-        typeServices.Add(item.Value.ServiceId, item.Value);
-      }
+      query = query.Where(x => x.Value.ServiceName.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.Value.ServiceDescription.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.Value.ServiceType.Contains(searchedWord, StringComparison.OrdinalIgnoreCase));
     }
-    return typeServices;
+    switch (sortBy.ToLower())
+    {
+      case "price":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.Value.ServicePrice);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.Value.ServicePrice);
+        }
+      break;
+      case "rating":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.Value.ServiceRating);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.Value.ServiceRating);
+        }
+      break;
+      default:
+      throw new ArgumentException("Invalid sort parameter. Valid parameters are 'Price' and 'Rating'."); 
+    }
+    var services = query.Select(x => new ServiceDTO(x.Value)).ToList();
+
+    if (services.Count == 0) throw new KeyNotFoundException("No services found.");
+    return services;
   }
 
   public Dictionary<int, ServiceDTO> GetAllServices()

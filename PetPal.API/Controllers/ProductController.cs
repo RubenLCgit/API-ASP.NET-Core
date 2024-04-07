@@ -7,7 +7,6 @@ using System.Security.Claims;
 namespace PetPal.API.Controllers;
 
 
-[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class ProductController : ControllerBase
@@ -57,6 +56,29 @@ public class ProductController : ControllerBase
     }
   }
 
+  [HttpGet("Search")]
+  public ActionResult<List<ProductDTO>> Search(string searchedWord, string sortBy = "price", string sortOrder = "asc")
+  {
+    try
+    {
+      var products = productService.SearchProduct(searchedWord, sortBy, sortOrder);
+      return Ok(products);
+    }
+    catch (KeyNotFoundException knfex)
+    {
+      return NotFound($"No products found: {knfex.Message}");
+    }
+    catch (ArgumentNullException anex)
+    {
+      return BadRequest($"Error searching services: {anex.Message}");
+    }
+    catch (Exception ex)
+    {
+      return BadRequest($"Error searching products: {ex.Message}");
+    }
+  }
+
+  [Authorize]
   [HttpPost]
   public ActionResult<Product> Create([FromBody] ProductCreateDTO productCreateDTO)
   {
@@ -75,7 +97,8 @@ public class ProductController : ControllerBase
       return BadRequest(ex.Message);
     }
   }
-  
+
+  [Authorize]
   [HttpPut("{productId}")]
   public IActionResult Update(int productId, [FromBody] ProductUpdateDTO productUpdateDTO)
   {
@@ -103,6 +126,7 @@ public class ProductController : ControllerBase
     }
   }
 
+  [Authorize]
   [HttpDelete("{productId}")]
   public IActionResult Delete(int productId)
   {

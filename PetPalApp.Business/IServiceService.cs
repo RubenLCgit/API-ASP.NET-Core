@@ -5,7 +5,7 @@ namespace PetPalApp.Business;
 public interface IServiceService
 {
   Service RegisterService(string tokenId, ServiceCreateDTO serviceCreateDTO);
-  Dictionary<int, Service> SearchService(string serviceType);
+  List<ServiceDTO> SearchService(string searchedWord, string sortBy, string sortOrder);
 
   public Dictionary<int, ServiceDTO> GetAllServices();
 

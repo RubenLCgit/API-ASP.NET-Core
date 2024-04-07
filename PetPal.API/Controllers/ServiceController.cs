@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 namespace PetPal.API.Controllers;
-[Authorize]
+
 [ApiController]
 [Route("[controller]")]
 
@@ -18,6 +18,7 @@ public class ServiceController : ControllerBase
     serviceService = _serviceService;
     logger = _logger;
   }
+
 
   [HttpGet]
   public ActionResult<Dictionary<int, ServiceDTO>> GetAll()
@@ -55,6 +56,29 @@ public class ServiceController : ControllerBase
     }
   }
 
+  [HttpGet("Search")]
+  public ActionResult<List<ServiceDTO>> Search(string searchedWord, string sortBy = "price", string sortOrder = "asc")
+  {
+    try
+    {
+      var services = serviceService.SearchService(searchedWord, sortBy, sortOrder);
+      return Ok(services);
+    }
+    catch (KeyNotFoundException knfex)
+    {
+      return NotFound($"No services found: {knfex.Message}");
+    }
+    catch (ArgumentException aex)
+    {
+      return BadRequest(aex.Message);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest($"Error searching services: {ex.Message}");
+    }
+  }
+
+  [Authorize]
   [HttpPost]
   public ActionResult<Service> Create([FromBody] ServiceCreateDTO serviceCreateDTO)
   {
@@ -70,6 +94,7 @@ public class ServiceController : ControllerBase
     }
   }
 
+  [Authorize]
   [HttpPut("{serviceId}")]
   public ActionResult<Service> Update(int serviceId, [FromBody] ServiceUpdateDTO serviceUpdateDTO)
   {
@@ -93,6 +118,7 @@ public class ServiceController : ControllerBase
     }
   }
 
+  [Authorize]
   [HttpDelete("{serviceId}")]
   public ActionResult Delete(int serviceId)
   {

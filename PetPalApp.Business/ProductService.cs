@@ -131,18 +131,42 @@ public class ProductService : IProductService
     }
   }
 
-  public Dictionary<int, Product> SearchProduct(string productType)
+  public List<ProductDTO> SearchProduct(string searchedWord, string sortBy, string sortOrder)
   {
-    var allProducts = Prepository.GetAllEntities();
-    Dictionary<int, Product> typeProducts = new();
-    foreach (var item in allProducts)
+    var query = Prepository.GetAllEntities().AsQueryable();
+    if (!string.IsNullOrWhiteSpace(searchedWord))
     {
-      if (item.Value.ProductType.IndexOf(productType,StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ProductDescription.IndexOf(productType, StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ProductName.IndexOf(productType, StringComparison.OrdinalIgnoreCase) >= 0)
-      {
-        typeProducts.Add(item.Value.ProductId, item.Value);
-      }
+      query = query.Where(x => x.Value.ProductName.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.Value.ProductDescription.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.Value.ProductType.Contains(searchedWord, StringComparison.OrdinalIgnoreCase));
     }
-    return typeProducts;
+    switch (sortBy.ToLower())
+    {
+      case "price":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.Value.ProductPrice);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.Value.ProductPrice);
+        }
+        break;
+      case "rating":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.Value.ProductRating);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.Value.ProductRating);
+        }
+        break;
+      default:
+        throw new ArgumentException("Invalid sort parameter. Valid parameters are 'Price' and 'Rating'.");
+    }
+    var products = query.Select(x => new ProductDTO(x.Value)).ToList();
+
+    if (products.Count == 0) throw new KeyNotFoundException("No products found.");
+    return products;
   }
 
   public Dictionary<int, Product> ShowMyProducts(int idUser)
