@@ -131,7 +131,7 @@ public class ProductService : IProductService
     }
   }
 
-  public List<ProductDTO> SearchProduct(string searchedWord, string sortBy, string sortOrder)
+  public List<ProductDTO> SearchAllProducts(string searchedWord, string sortBy, string sortOrder)
   {
     var query = Prepository.GetAllEntities().AsQueryable();
     if (!string.IsNullOrWhiteSpace(searchedWord))
@@ -162,6 +162,44 @@ public class ProductService : IProductService
         break;
       default:
         throw new ArgumentException("Invalid sort parameter. Valid parameters are 'Price' and 'Rating'.");
+    }
+    var products = query.Select(x => new ProductDTO(x.Value)).ToList();
+
+    if (products.Count == 0) throw new KeyNotFoundException("No products found.");
+    return products;
+  }
+
+  public List<ProductDTO> SearchMyProducts(string tokenId, string searchedWord, string sortBy, string sortOrder)
+  {
+    var query = Urepository.GetByIdEntity(int.Parse(tokenId)).ListProducts.AsQueryable();
+    if (!string.IsNullOrWhiteSpace(searchedWord))
+    {
+      query = query.Where(x => x.Value.ProductName.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.Value.ProductDescription.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.Value.ProductType.Contains(searchedWord, StringComparison.OrdinalIgnoreCase));
+    }
+    switch (sortBy.ToLower())
+    {
+      case "date":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.Value.ProductAvailability);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.Value.ProductAvailability);
+        }
+        break;
+      case "rating":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.Value.ProductRating);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.Value.ProductRating);
+        }
+        break;
+      default:
+        throw new ArgumentException("Invalid sort parameter. Valid parameters are 'Date' and 'Rating'.");
     }
     var products = query.Select(x => new ProductDTO(x.Value)).ToList();
 

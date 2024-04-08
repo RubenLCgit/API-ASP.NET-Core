@@ -130,6 +130,4 @@ public class UserController : ControllerBase
       return BadRequest($" Error deleting user: {ex.Message}");
     }
   }
-
-  
 }

@@ -101,7 +101,7 @@ public class ServiceService : IServiceService
     return allDataService;
   }
 
-  public List<ServiceDTO> SearchService(string searchedWord,string sortBy,string sortOrder)
+  public List<ServiceDTO> SearchAllServices(string searchedWord,string sortBy,string sortOrder)
   {
     var query = Srepository.GetAllEntities().AsQueryable();
     if (!string.IsNullOrWhiteSpace(searchedWord))
@@ -132,6 +132,44 @@ public class ServiceService : IServiceService
       break;
       default:
       throw new ArgumentException("Invalid sort parameter. Valid parameters are 'Price' and 'Rating'."); 
+    }
+    var services = query.Select(x => new ServiceDTO(x.Value)).ToList();
+
+    if (services.Count == 0) throw new KeyNotFoundException("No services found.");
+    return services;
+  }
+
+  public List<ServiceDTO> SearchMyServices(string tokenId, string searchedWord, string sortBy, string sortOrder)
+  {
+    var query = Urepository.GetByIdEntity(int.Parse(tokenId)).ListServices.AsQueryable();
+    if (!string.IsNullOrWhiteSpace(searchedWord))
+    {
+      query = query.Where(x => x.Value.ServiceName.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.Value.ServiceDescription.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.Value.ServiceType.Contains(searchedWord, StringComparison.OrdinalIgnoreCase));
+    }
+    switch (sortBy.ToLower())
+    {
+      case "date":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.Value.ServiceAvailability);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.Value.ServiceAvailability);
+        }
+        break;
+      case "rating":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.Value.ServiceRating);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.Value.ServiceRating);
+        }
+        break;
+      default:
+        throw new ArgumentException("Invalid sort parameter. Valid parameters are 'Date' and 'Rating'.");
     }
     var services = query.Select(x => new ServiceDTO(x.Value)).ToList();
 

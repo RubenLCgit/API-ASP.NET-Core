@@ -56,12 +56,34 @@ public class ProductController : ControllerBase
     }
   }
 
-  [HttpGet("Search")]
-  public ActionResult<List<ProductDTO>> Search(string searchedWord, string sortBy = "price", string sortOrder = "asc")
+  [HttpGet("SearchAllProducts")]
+  public ActionResult<List<ProductDTO>> SearchAllProducts(string searchedWord, string sortBy = "price", string sortOrder = "asc")
   {
     try
     {
-      var products = productService.SearchProduct(searchedWord, sortBy, sortOrder);
+      var products = productService.SearchAllProducts(searchedWord, sortBy, sortOrder);
+      return Ok(products);
+    }
+    catch (KeyNotFoundException knfex)
+    {
+      return NotFound($"No products found: {knfex.Message}");
+    }
+    catch (ArgumentNullException anex)
+    {
+      return BadRequest($"Error searching services: {anex.Message}");
+    }
+    catch (Exception ex)
+    {
+      return BadRequest($"Error searching products: {ex.Message}");
+    }
+  }
+  [Authorize]
+  [HttpGet("SearchMyProducts")]
+  public ActionResult<List<ProductDTO>> SearchMyProducts(string searchedWord, string sortBy = "Date", string sortOrder = "asc")
+  {
+    try
+    {
+      var products = productService.SearchMyProducts(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, searchedWord, sortBy, sortOrder);
       return Ok(products);
     }
     catch (KeyNotFoundException knfex)
