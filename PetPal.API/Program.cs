@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +15,16 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
-builder.Services.AddScoped<IRepositoryGeneric<User>, UserRepository>();
-builder.Services.AddScoped<IRepositoryGeneric<Product>, ProductRepository>();
-builder.Services.AddScoped<IRepositoryGeneric<Service>, ServiceRepository>();
+
+var connectionString = builder.Configuration.GetConnectionString("ServerDB_localhost");
+
+builder.Services.AddDbContext<PetPalAppContext>(options =>
+    options.UseSqlServer(connectionString)
+);
+
+//builder.Services.AddScoped<IRepositoryGeneric<User>, UserRepository>();
+//builder.Services.AddScoped<IRepositoryGeneric<Product>, ProductRepository>();
+//builder.Services.AddScoped<IRepositoryGeneric<Service>, ServiceRepository>();
 
 var key = builder.Configuration["JwtSettings:Key"];
 
