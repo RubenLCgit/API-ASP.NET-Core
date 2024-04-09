@@ -1,14 +1,17 @@
-﻿namespace PetPalApp.Business;
+﻿using PetPalApp.Domain;
+
+namespace PetPalApp.Business;
 
 public interface IUserService
 {
-  void RegisterUser(String name, String email, String Password, String UserSupplier);
-  void DeleteUser(String key);
-  public void DeleteUserService(string userName, string serviceId);
-  public void DeleteUserProduct(string userName, string serviceId);
-  public int GetIdUser(string name);
-  bool checkUserExist(String name, String email);
-  bool CheckLogin(string name, string password);
-  bool ValidatEmail(String email);
-  string ShowAccount(string name);
+  User RegisterUser(UserCreateUpdateDTO userCreateUpdateDTO);
+  void UpdateUser(string tokenRole, string tokenId, int userId, UserCreateUpdateDTO userCreateUpdateDTO);
+  void DeleteUser(string tokenRole, string tokenId, int userId);
+  bool checkUserExist(string userName, string userEmail);
+  bool ValidatEmail(string userEmail);
+  string ShowAccount(int userId);
+  Dictionary<int, UserDTO> GetAllUsers(string userRole);
+  UserDTO GetUser(string tokenRole, string tokenId, int userId);
+
+  User CheckLogin(string userName, string userPassword);
 }

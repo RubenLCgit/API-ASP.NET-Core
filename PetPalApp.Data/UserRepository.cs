@@ -6,12 +6,12 @@ namespace PetPalApp.Data;
 public class UserRepository : IRepositoryGeneric<User>
 {
 
-  public Dictionary<string, User> EntityDictionary = new Dictionary<string, User>();
+  public Dictionary<int, User> EntityDictionary = new Dictionary<int, User>();
   private readonly string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserRepository", "UsersRepository.json");
 
   public void AddEntity(User entity)
   {
-    Dictionary<String, User> listUsers;
+    Dictionary<int, User> listUsers;
     try
     {
       if (File.Exists(_filePath))
@@ -19,30 +19,31 @@ public class UserRepository : IRepositoryGeneric<User>
         listUsers = GetAllEntities();
         EntityDictionary = listUsers;
       }
-      EntityDictionary.Add(entity.UserName, entity);
+      EntityDictionary.Add(entity.UserId, entity);
       SaveChanges();
     }
     catch (Exception ex)
     {
-      throw new Exception("No se ha podido realizar el registro", ex);
+      throw new Exception("Registration failed", ex);
     }
+
   }
 
   public void DeleteEntity(User entity)
   {
     EntityDictionary = GetAllEntities();
-    EntityDictionary.Remove(entity.UserName);
+    EntityDictionary.Remove(entity.UserId);
     SaveChanges();
   }
 
-  public Dictionary<string, User> GetAllEntities()
+  public Dictionary<int, User> GetAllEntities()
   {
-    Dictionary <String, User> dictionaryUsers = new Dictionary<string, User>();;
+    Dictionary<int, User> dictionaryUsers = new Dictionary<int, User>();
     String jsonString;
     if (File.Exists(_filePath))
     {
       jsonString = File.ReadAllText(_filePath);
-      dictionaryUsers = JsonSerializer.Deserialize<Dictionary<string, User>>(jsonString);
+      dictionaryUsers = JsonSerializer.Deserialize<Dictionary<int, User>>(jsonString);
     }
     else
     {
@@ -51,25 +52,19 @@ public class UserRepository : IRepositoryGeneric<User>
     return dictionaryUsers;
   }
 
-  public User GetByStringEntity(string name)
+  public User GetByIdEntity(int entityId)
   {
     var dictionaryCurrentUser = GetAllEntities();
-    User user = new();
-    foreach (var item in dictionaryCurrentUser)
-    {
-      if (item.Value.UserName.Equals(name, StringComparison.OrdinalIgnoreCase))
-      {
-        user = item.Value;
-        break;
-      }
-    }
+    User user = null;
+    if (dictionaryCurrentUser.ContainsKey(entityId)) user = dictionaryCurrentUser[entityId];
+    if (user == null) throw new KeyNotFoundException("User not found");
     return user;
   }
 
-  public void UpdateEntity(String key, User user)
+  public void UpdateEntity(int entityId, User user)
   {
     EntityDictionary = GetAllEntities();
-    EntityDictionary[key] = user;
+    EntityDictionary[entityId] = user;
     SaveChanges();
   }
 

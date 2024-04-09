@@ -1,25 +1,65 @@
 using System.Text.RegularExpressions;
 using PetPalApp.Data;
 using PetPalApp.Domain;
+using System.Security.Claims;
 
 namespace PetPalApp.Business;
 
 public class UserService : IUserService
 {
   private readonly IRepositoryGeneric<User> repository;
+  private readonly IRepositoryGeneric<Product> productRepository;
 
-  public UserService(IRepositoryGeneric<User> _repository)
+  private readonly IRepositoryGeneric<Service> serviceRepository;
+
+  public UserService(IRepositoryGeneric<User> _repository, IRepositoryGeneric<Product> _productRepository, IRepositoryGeneric<Service> _serviceRepository)
   {
     repository = _repository;
+    productRepository = _productRepository;
+    serviceRepository = _serviceRepository;
   }
 
-  public bool checkUserExist(string name, string email)
+  public Dictionary<int, UserDTO> GetAllUsers(string userRole)
   {
-    bool userExist=false;
+    if (userRole != "Admin") throw new UnauthorizedAccessException("Utility only available for administrator");
+    if (repository.GetAllEntities() == null) throw new KeyNotFoundException("No users found");
+
+    return ConvertToDictionaryDTO(repository.GetAllEntities());
+  }
+
+  private Dictionary<int, UserDTO> ConvertToDictionaryDTO(Dictionary<int, User> users)
+  {
+    return users.ToDictionary(pair => pair.Key, pair => new UserDTO(pair.Value));
+  }
+
+  public UserDTO GetUser(string tokenRole , string tokenId, int userId)
+  {
+    var user = repository.GetByIdEntity(userId);
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, userId)) return new UserDTO(user);
+    else throw new UnauthorizedAccessException("You do not have permissions to access the requested user's information.");
+  }
+
+  public void UpdateUser(string tokenRole, string tokenId, int userId, UserCreateUpdateDTO userCreateUpdateDTO)
+  {
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, userId))
+    {
+      var user = repository.GetByIdEntity(userId);
+      user.UserName = userCreateUpdateDTO.UserName;
+      user.UserEmail = userCreateUpdateDTO.UserEmail;
+      user.UserPassword = userCreateUpdateDTO.UserPassword;
+      user.UserSupplier = userCreateUpdateDTO.UserSupplier;
+      repository.UpdateEntity(userId, user);
+    }
+    else throw new UnauthorizedAccessException("You do not have permissions to modify another user's data.");
+  }
+
+  public bool checkUserExist(string name = null, string email = null)
+  {
+    bool userExist = false;
     var allUsers = repository.GetAllEntities();
     foreach (var item in allUsers)
     {
-      if (item.Key.Equals(name, StringComparison.OrdinalIgnoreCase)||item.Value.UserEmail.Equals(email, StringComparison.OrdinalIgnoreCase))
+      if ((name != null && item.Value.UserName.Equals(name, StringComparison.OrdinalIgnoreCase)) || (email != null && item.Value.UserEmail.Equals(email, StringComparison.OrdinalIgnoreCase)))
       {
         userExist = true;
         break;
@@ -28,35 +68,35 @@ public class UserService : IUserService
     return userExist;
   }
 
-  public bool CheckLogin(string name, string password)
+  public User CheckLogin(string name, string password)
   {
-    bool login=false;
+    User user = null;
     var allUsers = repository.GetAllEntities();
     foreach (var item in allUsers)
     {
-      if (item.Key.Equals(name, StringComparison.OrdinalIgnoreCase)&&item.Value.UserPassword.Equals(password, StringComparison.OrdinalIgnoreCase))
+      if (item.Value.UserName.Equals(name, StringComparison.OrdinalIgnoreCase) && item.Value.UserPassword.Equals(password, StringComparison.OrdinalIgnoreCase))
       {
-        login = true;
+        user = item.Value;
         break;
       }
     }
-    return login;
+    return user;
   }
 
-  public void RegisterUser(string name, string email, string password, String stringSupplier)
+  public User RegisterUser(UserCreateUpdateDTO userCreateUpdateDTO)
   {
-    bool boolSupplier;
-    if (String.Equals(stringSupplier, "Y", StringComparison.OrdinalIgnoreCase))
+    try
     {
-      boolSupplier = true;
+      User user = new User(userCreateUpdateDTO.UserName, userCreateUpdateDTO.UserEmail, userCreateUpdateDTO.UserPassword, userCreateUpdateDTO.UserSupplier);
+      AssignId(user);
+      AssignRole(user);
+      repository.AddEntity(user);
+      return user;
     }
-    else
+    catch (Exception ex)
     {
-      boolSupplier = false;
+      throw new Exception("Registration could not be completed", ex);
     }
-    User user = new(name, email, password, boolSupplier);
-    AssignId(user);
-    repository.AddEntity(user);
   }
 
   private void AssignId(User user)
@@ -73,29 +113,21 @@ public class UserService : IUserService
       {
         if (item.Value.UserId > nextId)
         {
-        nextId = item.Value.UserId;
+          nextId = item.Value.UserId;
         }
       }
       user.UserId = nextId + 1;
     }
   }
 
-  public int GetIdUser(string name)
+  private void AssignRole(User user)
   {
-    var allUsers = repository.GetAllEntities();
-    foreach (var item in allUsers)
-    {
-      if (item.Key.Equals(name, StringComparison.OrdinalIgnoreCase))
-      {
-        return item.Value.UserId;
-      }
-    }
-    return 0;
+    user.UserRole = user.UserId == 1 ? "Admin" : "Client";
   }
 
-  public string ShowAccount(string name)
+  public string ShowAccount(int userId)
   {
-    var currentUser = repository.GetByStringEntity(name);
+    var currentUser = repository.GetByIdEntity(userId);
     String supplier;
     if (currentUser.UserSupplier == true) supplier = "Yes, I am a supplier";
     else supplier = "No, I am not a supplier";
@@ -121,24 +153,22 @@ public class UserService : IUserService
     return Regex.IsMatch(email, regularExpresionEmail);
   }
 
-  public void DeleteUser(string key)
+  public void DeleteUser(string tokenRole, string tokenId, int userId)
   {
-    var user = repository.GetByStringEntity(key);
-    repository.DeleteEntity(user);
-  }
-
-  public void DeleteUserService(string userName, string serviceId )
-  {
-    var user = repository.GetByStringEntity(userName);
-    user.ListServices.Remove(serviceId);
-    repository.UpdateEntity(userName, user);
-  }
-
-  public void DeleteUserProduct(string userName, string serviceId )
-  {
-    //var allUsers = repository.GetAllEntities();
-    var user = repository.GetByStringEntity(userName);
-    user.ListProducts.Remove(serviceId);
-    repository.UpdateEntity(userName, user);
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, userId))
+    {
+      var user = repository.GetByIdEntity(userId);
+      if (user.UserRole == "Admin") throw new UnauthorizedAccessException("Cannot delete Administrator account.");
+      foreach (var productId in user.ListProducts.Keys.ToList())
+      {
+        productRepository.DeleteEntity(productRepository.GetByIdEntity(productId));
+      }
+      foreach (var serviceId in user.ListServices.Keys.ToList())
+      {
+        serviceRepository.DeleteEntity(serviceRepository.GetByIdEntity(serviceId));
+      }
+      repository.DeleteEntity(user);
+    }
+    else throw new UnauthorizedAccessException("You do not have permissions to delete another user's account.");
   }
 }

@@ -5,11 +5,11 @@ namespace PetPalApp.Data;
 
 public class ProductRepository : IRepositoryGeneric<Product>
 {
-  public Dictionary<string, Product> EntityDictionary = new Dictionary<string, Product>();
+  public Dictionary<int, Product> EntityDictionary = new Dictionary<int, Product>();
   private readonly string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProductRepository", "ProductRepository.json");
   public void AddEntity(Product entity)
   {
-    Dictionary<string, Product> listProducts;
+    Dictionary<int, Product> listProducts;
     try
     {
       if (File.Exists(_filePath))
@@ -22,7 +22,7 @@ public class ProductRepository : IRepositoryGeneric<Product>
     }
     catch (Exception ex)
     {
-      throw new Exception("No se ha podido realizar el registro", ex);
+      throw new Exception("Registration failed", ex);
     }
   }
 
@@ -33,14 +33,14 @@ public class ProductRepository : IRepositoryGeneric<Product>
     SaveChanges();
   }
 
-  public Dictionary<string, Product> GetAllEntities()
+  public Dictionary<int, Product> GetAllEntities()
   {
-    Dictionary <string, Product> dictionaryProducts = new Dictionary<string, Product>();;
+    Dictionary <int, Product> dictionaryProducts = new Dictionary<int, Product>();;
     String jsonString;
     if (File.Exists(_filePath))
     {
-      jsonString = File.ReadAllText(_filePath);
-      dictionaryProducts = JsonSerializer.Deserialize<Dictionary<string, Product>>(jsonString);
+     jsonString = File.ReadAllText(_filePath);
+     dictionaryProducts = JsonSerializer.Deserialize<Dictionary<int, Product>> (jsonString);
     }
     else
     {
@@ -49,18 +49,12 @@ public class ProductRepository : IRepositoryGeneric<Product>
     return dictionaryProducts;
   }
 
-  public Product GetByStringEntity(string key)
+  public Product GetByIdEntity(int entityId)
   {
     var dictionaryCurrentProduct = GetAllEntities();
-    Product product = new();
-    foreach (var item in dictionaryCurrentProduct)
-    {
-      if (item.Value.ProductId.Equals(key, StringComparison.OrdinalIgnoreCase))
-      {
-        product = item.Value;
-        break;
-      }
-    }
+    Product product = null;
+    if (dictionaryCurrentProduct.ContainsKey(entityId)) product = dictionaryCurrentProduct[entityId];
+    if (product == null) throw new KeyNotFoundException("Product not found");
     return product;
   }
 
@@ -76,10 +70,10 @@ public class ProductRepository : IRepositoryGeneric<Product>
     File.WriteAllText(_filePath, jsonString);
   }
 
-  public void UpdateEntity(string key, Product product)
+  public void UpdateEntity(int entityId, Product product)
   {
     EntityDictionary = GetAllEntities();
-    EntityDictionary[key] = product;
+    EntityDictionary[entityId] = product;
     SaveChanges();
   }
 }

@@ -2,7 +2,7 @@ namespace PetPalApp.Domain;
 
 public class Product
 { 
-  public string ProductId { get; set; }
+  public int ProductId { get; set; }
   public int UserId { get; set; }
   public string ProductType{ get; set; }
   public string ProductName { get; set; }
@@ -16,8 +16,9 @@ public class Product
 
   public Product() { }
 
-  public Product(String type, String name, String description, decimal price, bool online, int stock)
+  public Product(int userId,String type, String name, String description, decimal price, bool online, int stock)
   {
+    UserId = userId;
     ProductType = type;
     ProductName = name;
     ProductDescription = description;

@@ -4,14 +4,19 @@ namespace PetPalApp.Business;
 
 public interface IProductService
 {
- void RegisterProduct(int idUser, String nameUser, String type, String nameProduct, String description, decimal price, bool online, int stock);
-  Dictionary<string, Product> SearchProduct(string ProductType);
+  Product RegisterProduct(string tokenId, ProductCreateDTO productCreateDTO);
+  List<ProductDTO> SearchAllProducts(string searchedWord, string sortBy, string sortOrder);
+  List<ProductDTO> SearchMyProducts(string tokenId, string searchedWord, string sortBy, string sortOrder);
 
-  public Dictionary<string, Product> GetAllProducts();
+  public Dictionary<int, ProductDTO> GetAllProducts();
 
-  Dictionary<string, Product> ShowMyProducts(String key);
+  Dictionary<int, Product> ShowMyProducts(int idUser);
 
-  public string PrintProduct(Dictionary<string, Product> product);
+  public string PrintProduct(Dictionary<int, Product> product);
 
-  void DeleteProduct(string userName, string productId);
+  void DeleteProduct(string tokenRole, string tokenId, int productId);
+
+  ProductDTO GetProduct(int productId);
+
+  void UpdateProduct(string tokenRole, string tokenId, int productId, ProductUpdateDTO productUpdateDTO);
 }

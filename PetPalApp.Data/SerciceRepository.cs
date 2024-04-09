@@ -6,11 +6,11 @@ namespace PetPalApp.Data;
 public class ServiceRepository : IRepositoryGeneric<Service>
 {
 
-  public Dictionary<string, Service> EntityDictionary = new Dictionary<string, Service>();
+  public Dictionary<int, Service> EntityDictionary = new Dictionary<int, Service>();
   private readonly string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ServiceRepository", "ServicesRepository.json");
   public void AddEntity(Service entity)
   {
-    Dictionary<string, Service> listServices;
+    Dictionary<int, Service> listServices;
     try
     {
       if (File.Exists(_filePath))
@@ -23,7 +23,7 @@ public class ServiceRepository : IRepositoryGeneric<Service>
     }
     catch (Exception ex)
     {
-      throw new Exception("No se ha podido realizar el registro", ex);
+      throw new Exception("Registration failed", ex);
     }
   }
 
@@ -34,14 +34,14 @@ public class ServiceRepository : IRepositoryGeneric<Service>
     SaveChanges();
   }
 
-  public Dictionary<string, Service> GetAllEntities()
+  public Dictionary<int, Service> GetAllEntities()
   {
-    Dictionary <string, Service> dictionaryUsers = new Dictionary<string, Service>();;
+    Dictionary <int, Service> dictionaryUsers = new Dictionary<int, Service>();;
     String jsonString;
     if (File.Exists(_filePath))
     {
       jsonString = File.ReadAllText(_filePath);
-      dictionaryUsers = JsonSerializer.Deserialize<Dictionary<string, Service>>(jsonString);
+      dictionaryUsers = JsonSerializer.Deserialize<Dictionary<int, Service>>(jsonString);
     }
     else
     {
@@ -49,18 +49,12 @@ public class ServiceRepository : IRepositoryGeneric<Service>
     }
     return dictionaryUsers;
   }
-  public Service GetByStringEntity(string id)
+  public Service GetByIdEntity(int entityId)
   {
     var dictionaryCurrentService = GetAllEntities();
-    Service service = new();
-    foreach (var item in dictionaryCurrentService)
-    {
-      if (item.Value.ServiceId.Equals(id, StringComparison.OrdinalIgnoreCase))
-      {
-        service = item.Value;
-        break;
-      }
-    }
+    Service service = null;
+    if (dictionaryCurrentService.ContainsKey(entityId)) service = dictionaryCurrentService[entityId];
+    if (service == null) throw new KeyNotFoundException("Service not found");
     return service;
   }
 
@@ -76,10 +70,10 @@ public class ServiceRepository : IRepositoryGeneric<Service>
     File.WriteAllText(_filePath, jsonString);
   }
 
-  public void UpdateEntity(string key, Service service)
+  public void UpdateEntity(int entityId, Service service)
   {
     EntityDictionary = GetAllEntities();
-    EntityDictionary[key] = service;
+    EntityDictionary[entityId] = service;
     SaveChanges();
   }
 }
