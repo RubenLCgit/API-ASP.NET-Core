@@ -32,11 +32,17 @@ public class UserDTO
 
     if (user.ListServices != null)
     {
-      ListIdServices.AddRange(user.ListServices.Keys);
+      foreach (var service in user.ListServices)
+      {
+        ListIdServices.Add(service.ServiceId);
+      }
     }
     if (user.ListProducts != null)
     {
-      ListIdProducts.AddRange(user.ListProducts.Keys);
+      foreach (var product in user.ListProducts)
+      {
+        ListIdProducts.Add(product.ProductId);
+      }
     }
   }
 }

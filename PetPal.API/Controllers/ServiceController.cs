@@ -21,7 +21,7 @@ public class ServiceController : ControllerBase
 
 
   [HttpGet]
-  public ActionResult<Dictionary<int, ServiceDTO>> GetAll()
+  public ActionResult<List<ServiceDTO>> GetAll()
   {
     try
     {
