@@ -21,7 +21,7 @@ public class ProductController : ControllerBase
 
 
   [HttpGet]
-  public ActionResult<Dictionary<int, ProductDTO>> GetAll()
+  public ActionResult<List<ProductDTO>> GetAll()
   {
     try
     {

@@ -20,7 +20,7 @@ public class UserController : ControllerBase
 
   [Authorize]
   [HttpGet]
-  public ActionResult<Dictionary<int, UserDTO>> GetAll()
+  public ActionResult<List<UserDTO>> GetAll()
   {
     try
     {
