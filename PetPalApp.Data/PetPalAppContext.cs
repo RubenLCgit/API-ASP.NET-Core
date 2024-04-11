@@ -38,6 +38,14 @@ public class PetPalAppContext : DbContext
       new Service { ServiceId = 3, UserId = 3, ServiceType = "Sitting", ServiceName = "Pet Sitting", ServiceDescription = "Pet sitting for all kinds of pets", ServicePrice = 30.0M, ServiceAvailability = new DateTime(2022, 8, 1), ServiceOnline = true, ServiceRating = 4.7 },
       new Service { ServiceId = 4, UserId = 4, ServiceType = "Walking", ServiceName = "Dog Walking", ServiceDescription = "Daily dog walking service", ServicePrice = 15.0M, ServiceAvailability = new DateTime(2022, 9, 1), ServiceOnline = true, ServiceRating = 4.9 }
     );
+
+    modelBuilder.Entity<Product>()
+        .Property(p => p.ProductPrice)
+        .HasColumnType("decimal(18,2)");
+
+    modelBuilder.Entity<Service>()
+        .Property(s => s.ServicePrice)
+        .HasColumnType("decimal(18,2)");
   }
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

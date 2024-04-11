@@ -12,8 +12,8 @@ using PetPalApp.Data;
 namespace PetPalApp.Data.Migrations
 {
     [DbContext(typeof(PetPalAppContext))]
-    [Migration("20240410192352_migracionPrueba1")]
-    partial class migracionPrueba1
+    [Migration("20240411162936_MigracionPetpal")]
+    partial class MigracionPetpal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

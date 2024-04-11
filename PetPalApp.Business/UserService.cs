@@ -41,6 +41,7 @@ public class UserService : IUserService
   public UserDTO GetUser(string tokenRole , string tokenId, int userId)
   {
     var user = repository.GetByIdEntity(userId);
+    if (user == null) throw new Exception("User does not exist.");
     if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, userId)) return new UserDTO(user);
     else throw new UnauthorizedAccessException("You do not have permissions to access the requested user's information.");
   }
@@ -50,6 +51,7 @@ public class UserService : IUserService
     if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, userId))
     {
       var user = repository.GetByIdEntity(userId);
+      if (user == null) throw new Exception("User does not exist.");
       user.UserName = userCreateUpdateDTO.UserName;
       user.UserEmail = userCreateUpdateDTO.UserEmail;
       user.UserPassword = userCreateUpdateDTO.UserPassword;
@@ -99,6 +101,7 @@ public class UserService : IUserService
     if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, userId))
     {
       var user = repository.GetByIdEntity(userId);
+      if (user != null) throw new Exception("User does not exist.");
       if (user.UserRole == "Admin") throw new UnauthorizedAccessException("Cannot delete Administrator account.");
       repository.DeleteEntity(user);
     }

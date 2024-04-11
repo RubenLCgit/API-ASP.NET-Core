@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetPalApp.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class migracionPrueba1 : Migration
+    public partial class MigracionPetpal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

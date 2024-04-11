@@ -21,7 +21,7 @@ builder.Services.AddScoped<IRepositoryGeneric<User>, UserEFRepository>();
 builder.Services.AddScoped<IRepositoryGeneric<Product>, ProductEFRepository>();
 builder.Services.AddScoped<IRepositoryGeneric<Service>, ServiceEFRepository>();
 
-var connectionString = builder.Configuration.GetConnectionString("ServerDB_local");
+var connectionString = builder.Configuration.GetConnectionString("ServerDB");
 
 builder.Services.AddDbContext<PetPalAppContext>(options =>
     options.UseSqlServer(connectionString)
