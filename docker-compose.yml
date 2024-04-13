@@ -1,0 +1,37 @@
+version: '3.4'
+ 
+networks:
+    petpalapp:
+
+services:
+    db: 
+        image: mcr.microsoft.com/mssql/server:2019-CU21-ubuntu-20.04
+        restart: always 
+        ports:
+            - 6127:1433
+        environment:
+            - ACCEPT_EULA=Y
+            - MSSQL_SA_PASSWORD=aaRubena27216@svalero.com
+        networks:
+            - petpalapp
+        volumes:
+            - db-data:/var/opt/mssql
+        healthcheck:
+            test: ["CMD", "sqlcmd", "-U", "sa", "-P", "aaRubena27216@svalero.com", "-Q", "SELECT 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+    api:
+        restart: unless-stopped 
+        ports:
+            - 7216:8080
+        build: 
+          context: .
+          dockerfile: Dockerfile
+        depends_on:
+            - db
+        networks:
+            - petpalapp
+
+volumes:
+    db-data: {}

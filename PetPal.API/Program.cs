@@ -78,6 +78,15 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+// Apply database migrations
+
+using (var scope = app.Services.CreateScope())
+{
+  var services = scope.ServiceProvider;
+  var context = services.GetRequiredService<PetPalAppContext>();
+  context.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 
 app.UseSwagger();
