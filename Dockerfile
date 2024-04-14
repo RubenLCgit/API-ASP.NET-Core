@@ -1,11 +1,19 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS buildApp
-WORKDIR /src
-COPY . . 
-RUN dotnet publish "PetPalApp.Presentation/PetPalApp.Presentation.csproj" -c Release -o /PetPalApp
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
-WORKDIR /PetPalApp
-COPY --from=buildApp /PetPalApp ./
-EXPOSE 7216
-VOLUME /PetPalApp/SharedForlder
-ENTRYPOINT ["dotnet", "PetPalApp.Presentation.dll"]
+COPY *.sln .
+COPY PetPalApp.Domain/*.csproj PetPalApp.Domain/
+COPY PetPalApp.Business/*.csproj PetPalApp.Business/
+COPY PetPalApp.Data/*.csproj PetPalApp.Data/
+COPY PetPal.API/*.csproj PetPalAPI/
+RUN dotnet restore PetPalAPI/PetPalApp.API.csproj
+
+COPY . .
+RUN dotnet publish PetPalAPI.sln -c Release -o API/out
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/API/out .
+
+EXPOSE 80
+ENTRYPOINT ["dotnet", "PetPalApp.API.dll"]

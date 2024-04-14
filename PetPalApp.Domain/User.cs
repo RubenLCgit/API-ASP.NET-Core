@@ -1,16 +1,27 @@
-﻿namespace PetPalApp.Domain;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace PetPalApp.Domain;
 
 public class User
 {
+  [Key]
   public int UserId { get; set; }
+  [Required]
+  public string UserRole { get; set; }
+  [Required]
   public string UserName { get; set; }
+  [Required]
+  [EmailAddress]
   public string UserEmail { get; set; }
+  [Required]
   public String UserPassword { get; set; }
   public DateTime UserRegisterDate { get; set; }
+  [Required]
   public bool UserSupplier { get; set; }
   public double UserRating { get; set; }
-  public Dictionary<string, Service> ListServices{ get; set; }
-  public Dictionary<string, Product> ListProducts{ get; set; }
+  public List<Service> ListServices{ get; set; }
+  public List<Product> ListProducts{ get; set; }
 
   public User() { }
 
@@ -22,7 +33,7 @@ public class User
     UserSupplier = supplier;
     UserRegisterDate = DateTime.Now;
     UserRating = 0.0;
-    ListServices = new Dictionary<string, Service>();
-    ListProducts = new Dictionary<string, Product>();
+    ListServices = new List<Service>();
+    ListProducts = new List<Product>();
   }
 }

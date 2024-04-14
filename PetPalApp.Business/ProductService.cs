@@ -16,103 +16,137 @@ public class ProductService : IProductService
     Prepository = _prepository;
     Urepository = _urepository;
   }
-  public void DeleteProduct(string userName, string productId)
+
+  public ProductDTO GetProduct(int productId)
   {
-    var product = Prepository.GetByStringEntity(productId);
-    User user = Urepository.GetByStringEntity(userName);
-    if (user.ListProducts.ContainsKey(productId))
+    var product = Prepository.GetByIdEntity(productId);
+    return new ProductDTO(product);
+  }
+
+  public void UpdateProduct(string tokenRole, string tokenId, int productId, ProductUpdateDTO productUpdateDTO)
+  {
+    var product = Prepository.GetByIdEntity(productId);
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, product.UserId))
+    {
+      product.ProductType = productUpdateDTO.ProductType;
+      product.ProductName = productUpdateDTO.ProductName;
+      product.ProductDescription = productUpdateDTO.ProductDescription;
+      product.ProductPrice = productUpdateDTO.ProductPrice;
+      product.ProductOnline = productUpdateDTO.ProductOnline;
+      product.ProductStock = productUpdateDTO.ProductStock;
+      Prepository.UpdateEntity(product);
+    }
+    else throw new UnauthorizedAccessException("You do not have permissions to modify another user's product.");
+  }
+
+  public void DeleteProduct(string tokenRole, string tokenId, int productId)
+  {
+    var product = Prepository.GetByIdEntity(productId);
+    if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, product.UserId))
     {
       Prepository.DeleteEntity(product);
     }
-    else Console.WriteLine("The product you want to delete does not exist or belongs to another user.");
+    else throw new UnauthorizedAccessException("You do not have permissions to delete another user's product.");
   }
 
-  public Dictionary<string, Product> GetAllProducts()
+  public List<ProductDTO> GetAllProducts()
   {
-    var allProducts = Prepository.GetAllEntities();
-    
-    return allProducts;
+    var products = Prepository.GetAllEntities();
+    if (products == null) throw new KeyNotFoundException("No products found");
+    return ConvertToListDTO(Prepository.GetAllEntities());
   }
 
-  public string PrintProduct(Dictionary<string, Product> products)
+  private List<ProductDTO> ConvertToListDTO(List<Product> products)
   {
-    String allDataProducts = "";
-    foreach (var item in products)
+    List<ProductDTO> productDTOs = new List<ProductDTO>();
+    foreach (var product in products)
     {
-      string online;
-      if (item.Value.ProductOnline) online = "Yes";
-      else online = "No";
-      String addProduct = @$"
-
-    ====================================================================================
-    
-    - Type:                         {item.Value.ProductType}
-    - Name:                         {item.Value.ProductName}
-    - Desciption:                   {item.Value.ProductDescription}
-    - Date of availabilility:       {item.Value.ProductAvailability}
-    - Home delivery service:        {online}
-    - Score:                        {item.Value.ProductRating}
-    - Stock:                        {item.Value.ProductStock} units
-    - Price:                        {item.Value.ProductPrice} €
-    
-    ====================================================================================";
-
-      allDataProducts += addProduct;
+      productDTOs.Add(new ProductDTO(product));
     }
-    return allDataProducts;
+    return productDTOs;
   }
 
-  public void RegisterProduct(int idUser, string nameUser, string type, string nameProduct, string description, decimal price, bool online, int stock)
+  public Product RegisterProduct(string tokenId, ProductCreateDTO productCreateDTO)
   {
-    Product product = new(type, nameProduct, description, price, online, stock);
-    AssignId(product);
-    product.UserId = idUser;
+    int userId = int.Parse(tokenId);
+    Product product = new(userId , productCreateDTO.ProductType, productCreateDTO.ProductName, productCreateDTO.ProductDescription, productCreateDTO.ProductPrice, productCreateDTO.ProductOnline, productCreateDTO.ProductStock);
     Prepository.AddEntity(product);
-    var user = Urepository.GetByStringEntity(nameUser);
-    user.ListProducts.Add(product.ProductId, product);
-    Urepository.UpdateEntity(nameUser, user);
+    return product;
   }
-
-  private void AssignId(Product product)
+  
+  public List<ProductDTO> SearchAllProducts(string searchedWord, string sortBy, string sortOrder)
   {
-    var allProducts = Prepository.GetAllEntities();
-    int nextId = 0;
-    int newId;
-    if (allProducts == null || allProducts.Count == 0)
+    var query = Prepository.GetAllEntities().AsQueryable();
+    if (!string.IsNullOrWhiteSpace(searchedWord))
     {
-      product.ProductId = "1";
+      query = query.Where(x => x.ProductName.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.ProductDescription.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.ProductType.Contains(searchedWord, StringComparison.OrdinalIgnoreCase));
     }
-    else
+    switch (sortBy.ToLower())
     {
-      foreach (var item in allProducts)
-      {
-        if (int.Parse(item.Value.ProductId) > nextId)
+      case "price":
+        if (sortOrder.ToLower() == "asc")
         {
-        nextId = int.Parse(item.Value.ProductId);
+          query = query.OrderBy(x => x.ProductPrice);
         }
-      }
-      newId = nextId + 1;
-      product.ProductId = newId.ToString();
+        else
+        {
+          query = query.OrderByDescending(x => x.ProductPrice);
+        }
+        break;
+      case "rating":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.ProductRating);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.ProductRating);
+        }
+        break;
+      default:
+        throw new ArgumentException("Invalid sort parameter. Valid parameters are 'Price' and 'Rating'.");
     }
+    var products = query.Select(x => new ProductDTO(x)).ToList();
+
+    if (products.Count == 0) throw new KeyNotFoundException("No products found.");
+    return products;
   }
 
-  public Dictionary<string, Product> SearchProduct(string productType)
+  public List<ProductDTO> SearchMyProducts(string tokenId, string searchedWord, string sortBy, string sortOrder)
   {
-    var allProducts = Prepository.GetAllEntities();
-    Dictionary<string, Product> typeProducts = new();
-    foreach (var item in allProducts)
+    var allproducts = Prepository.GetAllEntities();
+    var query = allproducts.Where(x => x.UserId == int.Parse(tokenId)).ToList().AsQueryable();
     {
-      if (item.Value.ProductType.IndexOf(productType,StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ProductDescription.IndexOf(productType, StringComparison.OrdinalIgnoreCase) >= 0 || item.Value.ProductName.IndexOf(productType, StringComparison.OrdinalIgnoreCase) >= 0)
-      {
-        typeProducts.Add(item.Value.ProductId, item.Value);
-      }
+      query = query.Where(x => x.ProductName.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.ProductDescription.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.ProductType.Contains(searchedWord, StringComparison.OrdinalIgnoreCase));
     }
-    return typeProducts;
-  }
+    switch (sortBy.ToLower())
+    {
+      case "date":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.ProductAvailability);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.ProductAvailability);
+        }
+        break;
+      case "rating":
+        if (sortOrder.ToLower() == "asc")
+        {
+          query = query.OrderBy(x => x.ProductRating);
+        }
+        else
+        {
+          query = query.OrderByDescending(x => x.ProductRating);
+        }
+        break;
+      default:
+        throw new ArgumentException("Invalid sort parameter. Valid parameters are 'Date' and 'Rating'.");
+    }
+    var products = query.Select(x => new ProductDTO(x)).ToList();
 
-  public Dictionary<string, Product> ShowMyProducts(String key)
-  {
-    Dictionary<string, Product> userProducts = Urepository.GetByStringEntity(key).ListProducts;
-    return userProducts;
+    if (products.Count == 0) throw new KeyNotFoundException("No products found.");
+    return products;
   }
 }
