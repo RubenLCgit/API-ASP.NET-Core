@@ -1,0 +1,138 @@
+2024-04-17 14:05:56.634 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2024-04-17 14:08:34.068 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2024-04-17 14:10:04.004 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2024-04-17 14:10:34.324 +02:00 [INF] Getting all products
+2024-04-17 14:11:17.230 +02:00 [INF] Getting all services
+2024-04-17 14:18:43.544 +02:00 [INF] Logging in user
+2024-04-17 14:19:05.190 +02:00 [INF] Logging in user
+2024-04-17 14:19:43.113 +02:00 [INF] Getting all users
+2024-04-17 14:20:31.276 +02:00 [INF] Getting product 1
+2024-04-17 14:20:41.219 +02:00 [INF] Getting product 10
+2024-04-17 14:20:41.263 +02:00 [ERR] Error getting product: Object reference not set to an instance of an object.
+2024-04-17 14:21:40.534 +02:00 [INF] Updating service 90
+2024-04-17 14:21:40.613 +02:00 [ERR] Error updating service: Object reference not set to an instance of an object.
+2024-04-17 14:25:45.075 +02:00 [INF] Getting product 10
+2024-04-17 14:25:45.117 +02:00 [ERR] Error getting product: Object reference not set to an instance of an object.
+2024-04-17 14:26:18.107 +02:00 [INF] Getting product 20
+2024-04-17 14:26:18.149 +02:00 [ERR] Error getting product: Object reference not set to an instance of an object.
+2024-04-17 14:47:23.412 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2024-04-17 15:18:45.315 +02:00 [INF] Logging in user
+2024-04-17 15:23:57.107 +02:00 [INF] Logging in user
+2024-04-17 15:28:24.283 +02:00 [INF] Logging in user
+2024-04-17 15:30:21.516 +02:00 [INF] Logging in user
+2024-04-17 15:32:01.565 +02:00 [INF] Registering user
+2024-04-17 15:32:27.869 +02:00 [INF] Registering user
+2024-04-17 15:32:43.516 +02:00 [INF] Getting all users
+2024-04-17 15:33:45.592 +02:00 [INF] Getting all users
+2024-04-17 15:34:21.051 +02:00 [INF] Updating user 7
+2024-04-17 15:47:07.935 +02:00 [INF] Logging in user
+2024-04-17 15:59:06.736 +02:00 [INF] Logging in user
+2024-04-17 15:59:24.463 +02:00 [INF] Getting all users
+2024-04-17 15:59:43.338 +02:00 [INF] Deleting user 5
+2024-04-17 15:59:43.383 +02:00 [ERR]  Error deleting user: User does not exist.
+2024-04-17 16:00:26.900 +02:00 [INF] Deleting user 5
+2024-04-17 16:00:26.989 +02:00 [ERR]  Error deleting user: User does not exist.
+2024-04-17 16:00:42.756 +02:00 [INF] Deleting user 5
+2024-04-17 16:00:42.799 +02:00 [ERR]  Error deleting user: User does not exist.
+2024-04-17 16:02:03.828 +02:00 [INF] Deleting user 6
+2024-04-17 16:02:03.876 +02:00 [ERR]  Error deleting user: User does not exist.
+2024-04-17 16:02:08.500 +02:00 [INF] Getting all users
+2024-04-17 16:02:42.853 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2024-04-17 16:03:15.618 +02:00 [INF] Logging in user
+2024-04-17 16:03:29.222 +02:00 [INF] Deleting user 5
+2024-04-17 16:03:29.388 +02:00 [ERR]  Error deleting user: User does not exist.
+2024-04-17 16:03:35.290 +02:00 [INF] Getting all users
+2024-04-17 16:03:53.322 +02:00 [INF] Getting all users
+2024-04-17 16:04:32.798 +02:00 [INF] Deleting user 5
+2024-04-17 16:06:37.752 +02:00 [ERR]  Error deleting user: User does not exist.
+2024-04-17 16:07:09.428 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2024-04-17 16:07:25.907 +02:00 [INF] Deleting user 5
+2024-04-17 16:07:38.436 +02:00 [INF] Getting all users
+2024-04-17 16:10:00.348 +02:00 [INF] Getting all users
+2024-04-17 16:10:00.375 +02:00 [WRN] Utility only available for administrator
+2024-04-17 16:12:09.420 +02:00 [INF] Getting all users
+2024-04-17 16:12:14.780 +02:00 [INF] Getting all users
+2024-04-17 16:12:14.796 +02:00 [WRN] Utility only available for administrator
+2024-04-17 16:12:21.755 +02:00 [INF] Getting all users
+2024-04-17 16:12:21.767 +02:00 [WRN] Utility only available for administrator
+2024-04-17 16:14:33.886 +02:00 [INF] Getting user 2
+2024-04-17 16:14:39.880 +02:00 [INF] Getting user 3
+2024-04-17 16:14:39.939 +02:00 [WRN] You do not have permissions to access the requested user's information.
+2024-04-17 16:14:47.200 +02:00 [INF] Getting user 3
+2024-04-17 16:14:51.840 +02:00 [INF] Getting user 4
+2024-04-17 16:16:57.645 +02:00 [INF] Creating product
+2024-04-17 16:17:56.964 +02:00 [INF] Getting all products
+2024-04-17 16:18:16.490 +02:00 [INF] Updating product data
+2024-04-17 16:19:40.389 +02:00 [INF] Updating product data
+2024-04-17 16:20:42.399 +02:00 [INF] Getting all products
+2024-04-17 16:20:54.016 +02:00 [INF] Getting all products
+2024-04-17 16:21:14.566 +02:00 [INF] Updating product data
+2024-04-17 16:21:19.411 +02:00 [INF] Getting all products
+2024-04-17 16:24:02.669 +02:00 [INF] Updating product data
+2024-04-17 16:24:02.731 +02:00 [WRN] You do not have permissions to modify another user's product.
+2024-04-17 16:25:14.388 +02:00 [INF] Getting all users
+2024-04-17 16:28:49.813 +02:00 [INF] Logging in user
+2024-04-17 16:30:20.142 +02:00 [INF] Updating product data
+2024-04-17 16:33:05.261 +02:00 [INF] Registering user
+2024-04-17 16:35:43.004 +02:00 [INF] Updating user 8
+2024-04-17 16:39:13.360 +02:00 [INF] Getting all users
+2024-04-17 16:39:19.778 +02:00 [INF] Deleting user 8
+2024-04-17 16:39:37.084 +02:00 [INF] Getting all users
+2024-04-17 16:39:48.521 +02:00 [INF] Deleting user 7
+2024-04-17 16:40:57.622 +02:00 [INF] Getting all users
+2024-04-17 16:41:26.638 +02:00 [INF] Getting user 2
+2024-04-17 16:44:47.241 +02:00 [INF] Getting all users
+2024-04-17 16:44:47.261 +02:00 [WRN] Utility only available for administrator
+2024-04-17 16:44:52.643 +02:00 [INF] Getting all users
+2024-04-17 16:47:12.356 +02:00 [INF] Creating product
+2024-04-17 16:55:18.924 +02:00 [INF] Getting all products
+2024-04-17 16:56:54.980 +02:00 [INF] Updating product data
+2024-04-17 16:58:50.241 +02:00 [INF] Deleting user 7
+2024-04-17 16:58:50.299 +02:00 [ERR]  Error deleting user: User does not exist.
+2024-04-17 16:59:27.614 +02:00 [INF] Deleting product
+2024-04-17 17:01:24.144 +02:00 [INF] Getting all products
+2024-04-17 17:02:18.382 +02:00 [INF] Getting product 3
+2024-04-17 17:04:09.077 +02:00 [INF] Searching all products
+2024-04-17 17:05:25.141 +02:00 [INF] Searching all products
+2024-04-17 17:06:46.128 +02:00 [INF] Searching all products
+2024-04-17 17:07:03.584 +02:00 [INF] Searching all products
+2024-04-17 17:07:03.648 +02:00 [WRN] No products found: No products found.
+2024-04-17 17:09:36.587 +02:00 [INF] Logging in user
+2024-04-17 17:10:02.392 +02:00 [INF] Searching my products
+2024-04-17 17:11:20.781 +02:00 [INF] Logging in user
+2024-04-17 17:12:11.214 +02:00 [INF] Getting all products
+2024-04-17 17:12:46.061 +02:00 [INF] Searching my products
+2024-04-17 17:12:59.850 +02:00 [INF] Searching my products
+2024-04-17 17:16:46.881 +02:00 [INF] Creating service
+2024-04-17 17:19:32.761 +02:00 [INF] Getting all services
+2024-04-17 17:20:15.964 +02:00 [INF] Updating service 5
+2024-04-17 17:20:18.351 +02:00 [INF] Getting all services
+2024-04-17 17:22:04.472 +02:00 [INF] Deleting service 5
+2024-04-17 17:22:12.448 +02:00 [INF] Getting all services
+2024-04-17 17:23:46.924 +02:00 [INF] Getting all services
+2024-04-17 17:25:06.265 +02:00 [INF] Getting service 2
+2024-04-17 17:26:34.459 +02:00 [INF] Searching all services
+2024-04-17 17:30:16.311 +02:00 [INF] Searching all services
+2024-04-17 17:31:14.603 +02:00 [INF] Searching my products
+2024-04-17 17:31:14.662 +02:00 [ERR] Error searching products: Invalid sort parameter. Valid parameters are 'Date' and 'Rating'.
+2024-04-17 17:31:56.542 +02:00 [INF] Searching my products
+2024-04-17 17:32:16.487 +02:00 [INF] Searching my products
+2024-04-17 17:32:34.468 +02:00 [INF] Searching my products
+2024-04-17 17:33:55.771 +02:00 [INF] Searching my services
+2024-04-17 17:34:23.540 +02:00 [INF] Searching my services
+2024-04-17 17:34:49.187 +02:00 [INF] Searching my services
+2024-04-17 17:39:06.890 +02:00 [INF] Logging in user
+2024-04-17 17:39:07.033 +02:00 [INF] Registering user
+2024-04-17 17:39:07.358 +02:00 [INF] Getting all users
+2024-04-17 17:39:07.580 +02:00 [INF] Creating product
+2024-04-17 17:39:07.874 +02:00 [INF] Getting all products
+2024-04-17 17:39:08.124 +02:00 [INF] Searching all products
+2024-04-17 17:39:08.180 +02:00 [WRN] No products found: No products found.
+2024-04-17 17:39:08.252 +02:00 [INF] Searching my products
+2024-04-17 17:39:08.306 +02:00 [WRN] No products found: No products found.
+2024-04-17 17:39:08.392 +02:00 [INF] Creating product
+2024-04-17 17:39:08.688 +02:00 [INF] Getting all services
+2024-04-17 17:39:08.923 +02:00 [INF] Searching all services
+2024-04-17 17:39:08.979 +02:00 [WRN] No services found: No services found.
+2024-04-17 17:39:09.064 +02:00 [INF] Searching my services
+2024-04-17 17:39:09.120 +02:00 [WRN] No services found: No services found.

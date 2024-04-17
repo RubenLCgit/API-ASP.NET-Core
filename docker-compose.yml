@@ -32,6 +32,8 @@ services:
             - db
         networks:
             - petpalapp
+        volumes:
+            - ./PetPal.API/Logs:/app/Logs
 
 volumes:
     db-data: {}
