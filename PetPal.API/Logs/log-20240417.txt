@@ -1,0 +1,17 @@
+2024-04-17 14:05:56.634 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2024-04-17 14:08:34.068 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2024-04-17 14:10:04.004 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2024-04-17 14:10:34.324 +02:00 [INF] Getting all products
+2024-04-17 14:11:17.230 +02:00 [INF] Getting all services
+2024-04-17 14:18:43.544 +02:00 [INF] Logging in user
+2024-04-17 14:19:05.190 +02:00 [INF] Logging in user
+2024-04-17 14:19:43.113 +02:00 [INF] Getting all users
+2024-04-17 14:20:31.276 +02:00 [INF] Getting product 1
+2024-04-17 14:20:41.219 +02:00 [INF] Getting product 10
+2024-04-17 14:20:41.263 +02:00 [ERR] Error getting product: Object reference not set to an instance of an object.
+2024-04-17 14:21:40.534 +02:00 [INF] Updating service 90
+2024-04-17 14:21:40.613 +02:00 [ERR] Error updating service: Object reference not set to an instance of an object.
+2024-04-17 14:25:45.075 +02:00 [INF] Getting product 10
+2024-04-17 14:25:45.117 +02:00 [ERR] Error getting product: Object reference not set to an instance of an object.
+2024-04-17 14:26:18.107 +02:00 [INF] Getting product 20
+2024-04-17 14:26:18.149 +02:00 [ERR] Error getting product: Object reference not set to an instance of an object.
