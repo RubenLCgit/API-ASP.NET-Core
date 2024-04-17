@@ -24,19 +24,23 @@ public class UserController : ControllerBase
   {
     try
     {
+      logger.LogInformation("Getting all users");
       var users = userService.GetAllUsers(User.FindFirst(ClaimTypes.Role)?.Value);
       return Ok(users);
     }
     catch (KeyNotFoundException knfex)
     {
+      logger.LogWarning($"No users found: {knfex.Message}");
       return NotFound($"No users found: {knfex.Message}");
     }
     catch (UnauthorizedAccessException uaex)
     {
+      logger.LogWarning(uaex.Message);
       return Unauthorized(uaex.Message);
     }
     catch (Exception ex)
     {
+      logger.LogError($"Error getting all users: {ex.Message}");
       return BadRequest($"Error getting all users: {ex.Message}");
     }
   }
@@ -46,19 +50,23 @@ public class UserController : ControllerBase
   {
     try
     {
+      logger.LogInformation($"Getting user {userId}");
       var user = userService.GetUser(User.FindFirst(ClaimTypes.Role)?.Value, User.FindFirst(ClaimTypes.NameIdentifier)?.Value, userId);
       return Ok(user);
     }
     catch (KeyNotFoundException knfex)
     {
+      logger.LogWarning($"User {userId} not found: {knfex.Message}");
       return NotFound($"User {userId} not found: {knfex.Message}");
     }
     catch (UnauthorizedAccessException uaex)
     {
+      logger.LogWarning(uaex.Message);
       return Unauthorized(uaex.Message);
     }
     catch (Exception ex)
     {
+      logger.LogError($"Error getting user: {ex.Message}");
       return BadRequest($"Error getting user: {ex.Message}");
     }
   }
@@ -69,15 +77,18 @@ public class UserController : ControllerBase
     if (!ModelState.IsValid) return BadRequest(ModelState);
     try
     {
+      logger.LogInformation("Registering user");
       var user = userService.RegisterUser(userCreateUpdateDTO);
       return CreatedAtAction(nameof(Get), new { userId = user.UserId }, user);
     }
     catch (System.Text.Json.JsonException jex)
     {
+      logger.LogWarning($"Invalid JSON format: {jex.Message}");
       return BadRequest($"Invalid JSON format: {jex.Message}");
     }
     catch (Exception ex)
     {
+      logger.LogError($"Error registering user: {ex.Message}");
       return BadRequest(ex.Message);
     }
   }
@@ -88,23 +99,28 @@ public class UserController : ControllerBase
     if (!ModelState.IsValid) return BadRequest(ModelState);
     try
     {
+      logger.LogInformation($"Updating user {userId}");
       userService.UpdateUser(User.FindFirst(ClaimTypes.Role)?.Value, User.FindFirst(ClaimTypes.NameIdentifier)?.Value, userId, userCreateUpdateDTO);
       return Ok(userCreateUpdateDTO);
     }
     catch (KeyNotFoundException nfex)
     {
+      logger.LogWarning($"User {userId} not found: {nfex.Message}");
       return NotFound($"User {userId} not found: {nfex.Message}");
     }
     catch (System.Text.Json.JsonException jex)
     {
+      logger.LogWarning($"Invalid JSON format: {jex.Message}");
       return BadRequest($"Invalid JSON format: {jex.Message}");
     }
     catch (UnauthorizedAccessException uaex)
     {
+      logger.LogWarning(uaex.Message);
       return Unauthorized(uaex.Message);
     }
     catch (Exception ex)
     {
+      logger.LogError($" Error updating user data: {ex.Message}");
       return BadRequest($" Error updating user data: {ex.Message}");
     }
   }
@@ -114,19 +130,23 @@ public class UserController : ControllerBase
   {
     try
     {
+      logger.LogInformation($"Deleting user {userId}");
       userService.DeleteUser(User.FindFirst(ClaimTypes.Role)?.Value, User.FindFirst(ClaimTypes.NameIdentifier)?.Value, userId);
       return NoContent();
     }
     catch (KeyNotFoundException knfex)
     {
+      logger.LogWarning($"User {userId} not found: {knfex.Message}");
       return NotFound($"User {userId} not found: {knfex.Message}");
     }
     catch (UnauthorizedAccessException uaex)
     {
+      logger.LogWarning(uaex.Message);
       return Unauthorized(uaex.Message);
     }
     catch (Exception ex)
     {
+      logger.LogError($" Error deleting user: {ex.Message}");
       return BadRequest($" Error deleting user: {ex.Message}");
     }
   }

@@ -18,10 +18,13 @@ public class AuthController : ControllerBase
   private readonly IUserService userService;
   private readonly IConfiguration configuration;
 
-  public AuthController(IUserService _userService ,IConfiguration _configuration)
+  private readonly ILogger<UserController> logger;
+
+  public AuthController(IUserService _userService ,IConfiguration _configuration, ILogger<UserController> _logger)
   {
     userService = _userService;
     configuration = _configuration;
+    logger = _logger;
   }
 
   [HttpPost("login")]
@@ -29,6 +32,7 @@ public class AuthController : ControllerBase
   {
     try
     {
+      logger.LogInformation("Logging in user");
       var user = userService.CheckLogin(userLoginDTO.UserName, userLoginDTO.UserPassword);
       if (user != null)
       {
@@ -59,6 +63,7 @@ public class AuthController : ControllerBase
     }
     catch (Exception ex)
     {
+      logger.LogError($"Error logging in: {ex.Message}");
       return BadRequest($"Error logging in: {ex.Message}");
     }
   }

@@ -6,10 +6,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Serilog
 
+builder.Host.UseSerilog((ctx, lc) => lc
+    .ReadFrom.Configuration(ctx.Configuration)
+    .Enrich.FromLogContext());
 
 // Add services to the container.
 
