@@ -101,7 +101,7 @@ public class UserService : IUserService
     if (ControlUserAccess.UserHasAccess(tokenRole, tokenId, userId))
     {
       var user = repository.GetByIdEntity(userId);
-      if (user != null) throw new Exception("User does not exist.");
+      if (user == null) throw new Exception("User does not exist.");
       if (user.UserRole == "Admin") throw new UnauthorizedAccessException("Cannot delete Administrator account.");
       repository.DeleteEntity(user);
     }
