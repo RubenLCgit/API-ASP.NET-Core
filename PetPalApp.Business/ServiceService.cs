@@ -68,7 +68,8 @@ public class ServiceService : IServiceService
   public Service RegisterService(string tokenId, ServiceCreateDTO serviceCreateDTO)
   {
     int userId = int.Parse(tokenId);
-    Service service = new (userId, serviceCreateDTO.ServiceType, serviceCreateDTO.ServiceName, serviceCreateDTO.ServiceDescription, serviceCreateDTO.ServicePrice, serviceCreateDTO.ServiceOnline);
+    var user = Urepository.GetByIdEntity(userId);
+    Service service = new (userId, serviceCreateDTO.ServiceType, serviceCreateDTO.ServiceName, serviceCreateDTO.ServiceDescription, serviceCreateDTO.ServicePrice, serviceCreateDTO.ServiceOnline, user.UserEmail);
     Srepository.AddEntity(service);
     return service;
   }

@@ -12,6 +12,7 @@ public class ProductDTO
   public bool ProductOnline { get; set; }
   public int ProductStock { get; set; }
   public double ProductRating { get; set; }
+  public string UserEmail { get; set; }
 
 
   public ProductDTO() { }
@@ -28,5 +29,6 @@ public class ProductDTO
     ProductOnline = product.ProductOnline;
     ProductStock = product.ProductStock;
     ProductRating = product.ProductRating;
+    UserEmail = product.UserEmail;
   }
 }

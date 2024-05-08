@@ -69,7 +69,8 @@ public class ProductService : IProductService
   public Product RegisterProduct(string tokenId, ProductCreateDTO productCreateDTO)
   {
     int userId = int.Parse(tokenId);
-    Product product = new(userId , productCreateDTO.ProductType, productCreateDTO.ProductName, productCreateDTO.ProductDescription, productCreateDTO.ProductPrice, productCreateDTO.ProductOnline, productCreateDTO.ProductStock);
+    var user = Urepository.GetByIdEntity(userId);
+    Product product = new(userId , productCreateDTO.ProductType, productCreateDTO.ProductName, productCreateDTO.ProductDescription, productCreateDTO.ProductPrice, productCreateDTO.ProductOnline, productCreateDTO.ProductStock, user.UserEmail);
     Prepository.AddEntity(product);
     return product;
   }
