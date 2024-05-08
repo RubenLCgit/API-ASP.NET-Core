@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using PetPalApp.Data;
 using PetPalApp.Domain;
 using System.Security.Claims;
+using BCrypt.Net;
 
 namespace PetPalApp.Business;
 
@@ -64,10 +65,11 @@ public class UserService : IUserService
   public User CheckLogin(string name, string password)
   {
     User user = null;
+    var passwordHashed = BCrypt.Net.BCrypt.HashPassword(password);
     var allUsers = repository.GetAllEntities();
     foreach (var currentUser in allUsers)
     {
-      if (currentUser.UserName.Equals(name, StringComparison.OrdinalIgnoreCase) && currentUser.UserPassword.Equals(password, StringComparison.OrdinalIgnoreCase))
+      if (currentUser.UserName.Equals(name, StringComparison.OrdinalIgnoreCase) && BCrypt.Net.BCrypt.Verify(password, currentUser.UserPassword))
       {
         user = currentUser;
         break;
@@ -78,17 +80,13 @@ public class UserService : IUserService
 
   public User RegisterUser(UserCreateUpdateDTO userCreateUpdateDTO)
   {
-    try
-    {
-      User user = new User(userCreateUpdateDTO.UserName, userCreateUpdateDTO.UserEmail, userCreateUpdateDTO.UserPassword, userCreateUpdateDTO.UserSupplier);
-      AssignRole(user);
-      repository.AddEntity(user);
-      return user;
-    }
-    catch (Exception ex)
-    {
-      throw new Exception("Registration could not be completed", ex);
-    }
+    var passwordHashed = BCrypt.Net.BCrypt.HashPassword(userCreateUpdateDTO.UserPassword);
+    User user = new User(userCreateUpdateDTO.UserName, userCreateUpdateDTO.UserEmail, passwordHashed, userCreateUpdateDTO.UserSupplier);
+    var users = repository.GetAllEntities();
+    if (users.Any(u => u.UserEmail == user.UserEmail)) throw new ApplicationException("Email already registered.");
+    AssignRole(user);
+    repository.AddEntity(user);
+    return user;
   }
 
   private void AssignRole(User user)

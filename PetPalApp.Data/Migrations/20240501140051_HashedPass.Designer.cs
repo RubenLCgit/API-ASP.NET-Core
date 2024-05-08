@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetPalApp.Data;
 
@@ -11,9 +12,11 @@ using PetPalApp.Data;
 namespace PetPalApp.Data.Migrations
 {
     [DbContext(typeof(PetPalAppContext))]
-    partial class PetPalAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240501140051_HashedPass")]
+    partial class HashedPass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

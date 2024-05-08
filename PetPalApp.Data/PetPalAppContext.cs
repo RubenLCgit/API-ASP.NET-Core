@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PetPalApp.Domain;
 using Microsoft.Extensions.Logging;
+using BCrypt.Net;
 
 namespace PetPalApp.Data;
 
@@ -17,11 +18,11 @@ public class PetPalAppContext : DbContext
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     modelBuilder.Entity<User>().HasData(
-      new User { UserId = 1, UserRole = "Admin", UserName = "Ruben", UserEmail = "ruben@gmail.com.com", UserPassword = "patatas1", UserSupplier = true },
-      new User { UserId = 2, UserRole = "Client", UserName = "Xio", UserEmail = "xio@gmail.com", UserPassword = "patatas2", UserSupplier = false },
-      new User { UserId = 3, UserRole = "Client", UserName = "Carlota", UserEmail = "carlota@gmail.com", UserPassword = "patatas3", UserSupplier = false },
-      new User { UserId = 4, UserRole = "Client", UserName = "Alberto", UserEmail = "alberto@gmail.com", UserPassword = "patatas4", UserSupplier = true },
-      new User { UserId = 5, UserRole = "Client", UserName = "Alejandro", UserEmail = "alejandro@gmail.com", UserPassword = "patatas5", UserSupplier = true }
+      new User { UserId = 1, UserRole = "Admin", UserName = "Ruben", UserEmail = "ruben@gmail.com.com", UserPassword = BCrypt.Net.BCrypt.HashPassword("patatas1"), UserSupplier = true },
+      new User { UserId = 2, UserRole = "Client", UserName = "Xio", UserEmail = "xio@gmail.com", UserPassword = BCrypt.Net.BCrypt.HashPassword("patatas2"), UserSupplier = false },
+      new User { UserId = 3, UserRole = "Client", UserName = "Carlota", UserEmail = "carlota@gmail.com", UserPassword = BCrypt.Net.BCrypt.HashPassword("patatas3"), UserSupplier = false },
+      new User { UserId = 4, UserRole = "Client", UserName = "Alberto", UserEmail = "alberto@gmail.com", UserPassword = BCrypt.Net.BCrypt.HashPassword("patatas4"), UserSupplier = true },
+      new User { UserId = 5, UserRole = "Client", UserName = "Alejandro", UserEmail = "alejandro@gmail.com", UserPassword = BCrypt.Net.BCrypt.HashPassword("patatas5"), UserSupplier = true }
     );
 
     modelBuilder.Entity<Product>().HasData(

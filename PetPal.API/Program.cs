@@ -16,6 +16,19 @@ builder.Host.UseSerilog((ctx, lc) => lc
     .ReadFrom.Configuration(ctx.Configuration)
     .Enrich.FromLogContext());
 
+
+// Añadir la configuración de CORS
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("MyPolicy",
+  policyBuilder =>
+  {
+    policyBuilder.AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+  });
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -28,8 +41,16 @@ builder.Services.AddScoped<IRepositoryGeneric<Service>, ServiceEFRepository>();
 
 var connectionString = builder.Configuration.GetConnectionString("ServerAzDBUser");
 
+// Modificar aquí para incluir la estrategia de reintentos
+
 builder.Services.AddDbContext<PetPalAppContext>(options =>
-    options.UseSqlServer(connectionString)
+    options.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
+    {
+      sqlOptions.EnableRetryOnFailure(
+          maxRetryCount: 10, // Número máximo de intentos de reanudación
+          maxRetryDelay: TimeSpan.FromSeconds(10), // Tiempo de espera entre intentos
+          errorNumbersToAdd: null); // Puedes especificar aquí los errores que quieres que se manejen como fallos transitorios
+    })
 );
 
 var key = builder.Configuration["JwtSettings:Key"];
@@ -91,6 +112,9 @@ using (var scope = app.Services.CreateScope())
   var context = services.GetRequiredService<PetPalAppContext>();
   context.Database.Migrate();
 }
+
+// Usar CORS
+app.UseCors("MyPolicy");
 
 // Configure the HTTP request pipeline.
 
