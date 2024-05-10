@@ -39,17 +39,15 @@ builder.Services.AddScoped<IRepositoryGeneric<User>, UserEFRepository>();
 builder.Services.AddScoped<IRepositoryGeneric<Product>, ProductEFRepository>();
 builder.Services.AddScoped<IRepositoryGeneric<Service>, ServiceEFRepository>();
 
-var connectionString = builder.Configuration.GetConnectionString("ServerAzDBUser");
-
-// Modificar aquí para incluir la estrategia de reintentos
+var connectionString = builder.Configuration.GetConnectionString("ServerDB");
 
 builder.Services.AddDbContext<PetPalAppContext>(options =>
     options.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
     {
       sqlOptions.EnableRetryOnFailure(
-          maxRetryCount: 10, // Número máximo de intentos de reanudación
-          maxRetryDelay: TimeSpan.FromSeconds(10), // Tiempo de espera entre intentos
-          errorNumbersToAdd: null); // Puedes especificar aquí los errores que quieres que se manejen como fallos transitorios
+          maxRetryCount: 10,
+          maxRetryDelay: TimeSpan.FromSeconds(10),
+          errorNumbersToAdd: null);
     })
 );
 
@@ -69,7 +67,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
       };
     });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -113,10 +110,8 @@ using (var scope = app.Services.CreateScope())
   context.Database.Migrate();
 }
 
-// Usar CORS
 app.UseCors("MyPolicy");
 
-// Configure the HTTP request pipeline.
 
 app.UseSwagger();
 app.UseSwaggerUI();

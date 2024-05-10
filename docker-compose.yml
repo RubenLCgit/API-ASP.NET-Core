@@ -21,7 +21,7 @@ services:
             interval: 30s
             timeout: 10s
             retries: 3
-    api:
+    api-dev:
         restart: unless-stopped 
         ports:
             - 7216:8080
@@ -34,6 +34,19 @@ services:
             - petpalapp
         volumes:
             - ./PetPal.API/Logs:/app/Logs
-
+    web:
+        image: rubenlcdocker/petpalappvueweb:1.0
+        restart: unless-stopped 
+        ports:
+            - 6172:80
+        depends_on:
+            - api-dev
+        networks:
+            - petpalapp
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:80"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
 volumes:
     db-data: {}
