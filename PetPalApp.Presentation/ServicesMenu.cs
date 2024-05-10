@@ -1,20 +1,8 @@
-using PetPalApp.Business;
-
 namespace PetPalApp.Presentation;
 
 public class ServiceMenu
 {
-  public readonly IUserService userService;
-  public readonly ISupplierService supplierService;
-  public readonly IProductService productService;
-
-  public ServiceMenu(IUserService _userService, ISupplierService _supplierService, IProductService _productService) {
-    userService = _userService;
-    supplierService = _supplierService;
-    productService = _productService;
-  }
-
-    public void DisplayServiceMenu(string name)
+  public void DisplayServiceMenu(string name)
   {
     #if !DEBUG
     Console.Clear();
@@ -35,7 +23,7 @@ public class ServiceMenu
     switch (option)
     {
       case "1":
-        Console.WriteLine(supplierService.PrintServices(supplierService.GetAllServices()));
+        Console.WriteLine("Pintar todos los servicios del usuario");
         PressToContinue();
         DisplayServiceMenu(name);
       break;
@@ -47,7 +35,7 @@ public class ServiceMenu
           Console.Write("\nYou must enter a valid service type: ");
           typeService = Console.ReadLine();
         }
-        Console.WriteLine(supplierService.PrintServices(supplierService.SearchService(typeService)));
+        Console.WriteLine("Pintar los servicios que coincidan con el tipo de servicio");
         PressToContinue();
         DisplayServiceMenu(name);
       break;

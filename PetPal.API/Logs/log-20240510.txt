@@ -143,3 +143,30 @@
 2024-05-10 09:50:14.231 +00:00 [INF] Getting all services
 2024-05-10 09:50:14.231 +00:00 [INF] Getting all products
 2024-05-10 09:50:14.241 +00:00 [INF] Getting all services
+2024-05-10 11:54:05.832 +00:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2024-05-10 11:54:09.116 +00:00 [WRN] Storing keys in a directory '/root/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+2024-05-10 11:54:09.126 +00:00 [WRN] No XML encryptor configured. Key {0d9a5f1a-7b17-4302-b42a-b33e6bdbe78c} may be persisted to storage in unencrypted form.
+2024-05-10 11:54:24.466 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-10 11:54:24.496 +00:00 [INF] Getting all services
+2024-05-10 11:54:24.496 +00:00 [INF] Getting all products
+2024-05-10 11:54:24.718 +00:00 [INF] Getting all services
+2024-05-10 11:55:18.123 +00:00 [INF] Getting all products
+2024-05-10 11:56:01.032 +00:00 [INF] Registering user
+2024-05-10 11:56:01.243 +00:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2024-05-10 11:56:40.530 +00:00 [INF] Logging in user
+2024-05-10 11:56:58.822 +00:00 [INF] Getting all products
+2024-05-10 11:57:12.410 +00:00 [INF] Creating product
+2024-05-10 11:57:12.430 +00:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2024-05-10 11:57:17.432 +00:00 [INF] Getting all products
+2024-05-10 11:57:32.569 +00:00 [INF] Getting all services
+2024-05-10 11:57:41.726 +00:00 [INF] Creating service
+2024-05-10 11:57:49.081 +00:00 [INF] Getting all services
+2024-05-10 11:58:20.913 +00:00 [INF] Deleting service 6
+2024-05-10 11:58:20.920 +00:00 [ERR] Error deleting service: Object reference not set to an instance of an object.
+2024-05-10 11:58:44.353 +00:00 [INF] Getting all services
+2024-05-10 11:59:19.838 +00:00 [INF] Getting all products
+2024-05-10 11:59:33.433 +00:00 [INF] Getting all services
+2024-05-10 11:59:58.526 +00:00 [INF] Logging in user
+2024-05-10 12:00:18.381 +00:00 [INF] Getting all users
+2024-05-10 12:06:29.755 +00:00 [INF] Deleting service 6
+2024-05-10 12:06:29.889 +00:00 [ERR] Error deleting service: Object reference not set to an instance of an object.

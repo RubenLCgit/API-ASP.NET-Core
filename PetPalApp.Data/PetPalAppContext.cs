@@ -47,6 +47,19 @@ public class PetPalAppContext : DbContext
     modelBuilder.Entity<Service>()
         .Property(s => s.ServicePrice)
         .HasColumnType("decimal(18,2)");
+
+    modelBuilder.Entity<User>()
+    .HasMany(u => u.ListProducts)
+    .WithOne()
+    .HasForeignKey(p => p.UserId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+    modelBuilder.Entity<User>()
+        .HasMany(u => u.ListServices)
+        .WithOne()
+        .HasForeignKey(s => s.UserId)
+        .OnDelete(DeleteBehavior.Cascade);
+
   }
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

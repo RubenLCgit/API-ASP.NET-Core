@@ -1,18 +1,7 @@
-using PetPalApp.Business;
-
 namespace PetPalApp.Presentation;
 
 public class MainMenu
 {
-  public readonly IUserService userService;
-  public readonly ISupplierService supplierService;
-  public readonly IProductService productService;
-
-  public MainMenu(IUserService _userService, ISupplierService _supplierService, IProductService _productService) {
-    userService = _userService;
-    supplierService = _supplierService;
-    productService = _productService;
-  }
   public void ApplicationInit()
   {
     Console.WriteLine(@"
@@ -44,7 +33,9 @@ public class MainMenu
     #endif
     Console.WriteLine("\t\t1. Sign up");
     Console.WriteLine("\t\t2. Sign in");
-    Console.WriteLine("\t\t3. Exit\n");
+    Console.WriteLine("\t\t3. Products\n");
+    Console.WriteLine("\t\t4. Services\n");
+    Console.WriteLine("\t\t5. Exit\n");
     Console.Write("\n\nPlease select an option:");
     SelectMainOption(Console.ReadLine());
   }
@@ -62,6 +53,16 @@ public class MainMenu
       case "3":
         Console.Write("\nClosing the application");
         EmuleLoad();
+      break;
+      case "4":
+        Conlose.Write("\nServicios disponibles");
+        ServiceMenu.PressToContinue();
+        DisplayMainMenu();
+      break;
+      case "5":
+        Console.Write("\nProductos disponibles");
+        ServiceMenu.PressToContinue();
+        DisplayMainMenu();
       break;
       default:
         Console.WriteLine("\nInvalid option\n");
@@ -82,14 +83,14 @@ public class MainMenu
     }
     Console.Write("\nEnter a valid email address: ");
     email = Console.ReadLine();
-    while (!userService.ValidatEmail(email))
+    while (true) //Metodo que compruebe si el email es valido
     {
     Console.Write("\nYou must enter a valid e-mail address: ");
     email = Console.ReadLine();
     }
-    if (userService.checkUserExist(name, email))
+    if (false) //Metodo que comprueve si el email de usuario ya existe
     {
-      Console.Write($"\nUser {name} or email {email} already exists.");
+      Console.Write($"\nUser email {email} already exists.");
       ServiceMenu.PressToContinue();
       DisplayMainMenu();
     }
@@ -109,7 +110,7 @@ public class MainMenu
         Console.Write("\nYour password must consist of at least 7 characters: ");
         password = Console.ReadLine();
       }
-      userService.RegisterUser(name, email, password, supplier);
+      //userService.RegisterUser(name, email, password, supplier); Metodo que registra el usuario
       Console.WriteLine("Registered user.");
       ServiceMenu.PressToContinue();
       DisplayMainMenu();
@@ -118,15 +119,13 @@ public class MainMenu
 
   private void EnterDataLoginUser()
   {
-    UserMenu userMenu = new(userService, supplierService, productService);
-    ServiceMenu serviceMenu = new(userService, supplierService, productService);
     string name, password;
     bool incorrectLogin = true;
     Console.Write("\nEnter your user name: ");
     name = Console.ReadLine();
     Console.Write("\nEnter your secret password: ");
-    password = Console.ReadLine();//TODO: Implement password entry method with asterisks
-    if (!userService.CheckLogin(name, password))
+    password = Console.ReadLine();
+    if (false) //Metodo que compruebe si el usuario y la contraseña son correctos
     {
       Console.WriteLine($"Incorrect username or password.");
       ServiceMenu.PressToContinue();

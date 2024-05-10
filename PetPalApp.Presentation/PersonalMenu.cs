@@ -1,20 +1,7 @@
-using PetPalApp.Business;
-using PetPalApp.Data;
-
 namespace PetPalApp.Presentation;
 
 public class PersonalMenu
 {
-  public readonly IUserService userService;
-  public readonly ISupplierService supplierService;
-  public readonly IProductService productService;
-
-  public PersonalMenu(IUserService _userService, ISupplierService _supplierService, IProductService _productService) {
-    userService = _userService;
-    supplierService = _supplierService;
-    productService = _productService;
-  }
-
     public void DisplayPersonalMenu(string name)
   {
     #if !DEBUG
@@ -40,13 +27,13 @@ public class PersonalMenu
   }
   public void SelectServiceOption(string name, string option)
   {
-    MainMenu mainMenu = new(userService, supplierService, productService);
-    UserMenu userMenu = new(userService, supplierService, productService);
-    ServiceMenu serviceMenu = new ServiceMenu(userService, supplierService, productService);
+    MainMenu mainMenu = new();
+    UserMenu userMenu = new();
+    ServiceMenu serviceMenu = new ServiceMenu();
     switch (option)
     {
       case "1":
-        Console.WriteLine(userService.ShowAccount(name));
+        Console.WriteLine("Mostrar datos del usuario");
         Console.WriteLine("Press any key to return...");
         Console.ReadLine();
         DisplayPersonalMenu(name);
@@ -58,16 +45,13 @@ public class PersonalMenu
         EnterProductData(name);
       break;
       case "4":
-        String listUserServices = supplierService.PrintServices(supplierService.ShowMyServices(name));
-        String listUserProducts = productService.PrintProduct(productService.ShowMyProducts(name));
-        Console.WriteLine($"{name}'s services:\n\n{listUserServices}\n\n");
-        Console.WriteLine($"{name}'s products:\n\n{listUserProducts}\n\n");
+        Console.WriteLine($"Pintar los productos y servicios del usuario {name}");
         ServiceMenu.PressToContinue();
         DisplayPersonalMenu(name);
       break;
       case "5":
       Console.WriteLine("Delete a service or a product?\n");
-      bool optioIncorrect = true;
+      bool optionIncorrect = true;
         String entity = "";
       do
       {
@@ -77,35 +61,37 @@ public class PersonalMenu
         {
           case "1":
             entity = "product";
-            optioIncorrect = false;
+            optionIncorrect = false;
             break;
 
           case "2":
               entity = "service";
-              optioIncorrect = false;
+              optionIncorrect = false;
               break;
           case "3":
               DisplayPersonalMenu(name);
-              optioIncorrect = false;
+              optionIncorrect = false;
               break;
           default:
             Console.WriteLine("\nInvalid option\n");
 
           break;
         }
-      } while (optioIncorrect);
+      } while (optionIncorrect);
       if (string.IsNullOrEmpty(entity))
       {
         break;
       }
       else
       {
+        Console.WriteLine("Boorar producto o servicio\n");
         DeleteUserProductOrService(entity, name);
         MainMenu.EmuleLoad();
         DisplayPersonalMenu(name);
       }
       break;
       case "6":
+        Console.WriteLine("Delete account\n");
         DeleteUserProductOrService("account", name);
         MainMenu.EmuleLoad();
         mainMenu.DisplayMainMenu();
@@ -127,7 +113,7 @@ public class PersonalMenu
     decimal price;
     bool online, isNumber;
 
-    idUser = userService.GetIdUser(name);
+    idUser = 1; // Obtener el id del usuario
 
     Console.Write("Enter the service name: ");
     nameService = Console.ReadLine();
@@ -178,7 +164,7 @@ public class PersonalMenu
     {
       online = false;
     }
-    supplierService.RegisterService(idUser, name, type, nameService, description, price, online);
+    Console.WriteLine("Registrar servicio");
     
     DisplayPersonalMenu(name);
   }
@@ -189,7 +175,7 @@ public class PersonalMenu
     decimal price;
     bool online, isNumber;
 
-    idUser = userService.GetIdUser(name);
+    idUser = 1; // Obtener el id del usuario
 
     Console.Write("Enter the product name: ");
     nameProduct = Console.ReadLine();
@@ -253,7 +239,7 @@ public class PersonalMenu
     {
       online = false;
     }
-    productService.RegisterProduct(idUser, name, type, nameProduct, description, price, online, stock);
+    Console.WriteLine("Registrar producto");
     
     DisplayPersonalMenu(name);
   }

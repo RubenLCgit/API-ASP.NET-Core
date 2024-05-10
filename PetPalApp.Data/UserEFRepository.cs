@@ -28,7 +28,9 @@ public class UserEFRepository : IRepositoryGeneric<User>
   {
     try
     {
-      _context.Users.Remove(user);
+      var userToDelete = _context.Users.Include(u => u.ListServices).Include(u => u.ListProducts).FirstOrDefault(u => u.UserId == user.UserId);
+      if (userToDelete == null) throw new KeyNotFoundException("User not found.");
+      _context.Users.Remove(userToDelete);
       _context.SaveChanges();
     }
     catch (DbUpdateException ex)

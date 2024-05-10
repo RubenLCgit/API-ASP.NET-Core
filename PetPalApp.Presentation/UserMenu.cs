@@ -4,17 +4,7 @@ namespace PetPalApp.Presentation;
 
 public class UserMenu
 {
-  public readonly IUserService userService;
-  public readonly ISupplierService supplierService;
-  public readonly IProductService productService;
-
-  public UserMenu(IUserService _userService, ISupplierService _supplierService, IProductService _productService) {
-    userService = _userService;
-    supplierService = _supplierService;
-    productService = _productService;
-  }
-
-    public void DisplayUserMenu(string name)
+  public void DisplayUserMenu(string name)
   {
     #if !DEBUG
     Console.Clear();
@@ -31,9 +21,9 @@ public class UserMenu
   }
   public void SelectUserOption(string name, string option)
   {
-    MainMenu mainMenu = new(userService, supplierService, productService);
-    ServiceMenu serviceMenu = new(userService, supplierService, productService);
-    PersonalMenu personalMenu = new(userService, supplierService, productService);
+    MainMenu mainMenu = new();
+    ServiceMenu serviceMenu = new();
+    PersonalMenu personalMenu = new();
     switch (option)
     {
       case "1":
