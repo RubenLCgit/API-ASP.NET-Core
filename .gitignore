@@ -39,4 +39,4 @@
 *.ldf
 *.pptx
 *.xml
-*/Logs/*
+Logs/*
