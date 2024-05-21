@@ -62,7 +62,7 @@ public class ProductController : ControllerBase
     }
   }
 
-  [HttpGet("SearchAllProducts")]
+  [HttpGet("search")]
   public ActionResult<List<ProductDTO>> SearchAllProducts(string searchedWord, string sortBy = "price", string sortOrder = "asc")
   {
     try
@@ -88,9 +88,16 @@ public class ProductController : ControllerBase
     }
   }
   [Authorize]
-  [HttpGet("SearchMyProducts")]
-  public ActionResult<List<ProductDTO>> SearchMyProducts(string searchedWord, string sortBy = "Date", string sortOrder = "asc")
+  [HttpGet("{userId}/products")]
+  public ActionResult<List<ProductDTO>> SearchMyProducts(int userId, string searchedWord, string sortBy = "Date", string sortOrder = "asc")
   {
+    var tokenId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var tokenRole = User.FindFirst(ClaimTypes.Role)?.Value;
+    if (userId != int.Parse(tokenId) && tokenRole != "Admin")
+    {
+      logger.LogWarning("Unauthorized access");
+      return Unauthorized("Unauthorized access");
+    }
     try
     {
       logger.LogInformation("Searching my products");
