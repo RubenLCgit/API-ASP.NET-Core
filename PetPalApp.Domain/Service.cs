@@ -21,11 +21,12 @@ public class Service
   [Required]
   public bool ServiceOnline { get; set; }
   public double ServiceRating { get; set; }
+  public string UserEmail { get; set; }
 
 
   public Service() { }
 
-  public Service(int userId ,String type, String name, String description, decimal price, bool online)
+  public Service(int userId ,String type, String name, String description, decimal price, bool online, string email)
   {
     UserId = userId;
     ServiceType = type;
@@ -34,5 +35,6 @@ public class Service
     ServicePrice = price;
     ServiceOnline = online;
     ServiceAvailability = DateTime.Now;
+    UserEmail = email;
   }
 }

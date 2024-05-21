@@ -16,6 +16,19 @@ builder.Host.UseSerilog((ctx, lc) => lc
     .ReadFrom.Configuration(ctx.Configuration)
     .Enrich.FromLogContext());
 
+
+// Añadir la configuración de CORS
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("MyPolicy",
+  policyBuilder =>
+  {
+    policyBuilder.AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+  });
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -26,10 +39,16 @@ builder.Services.AddScoped<IRepositoryGeneric<User>, UserEFRepository>();
 builder.Services.AddScoped<IRepositoryGeneric<Product>, ProductEFRepository>();
 builder.Services.AddScoped<IRepositoryGeneric<Service>, ServiceEFRepository>();
 
-var connectionString = builder.Configuration.GetConnectionString("ServerAzDBUser");
+var connectionString = builder.Configuration.GetConnectionString("ServerDB");
 
 builder.Services.AddDbContext<PetPalAppContext>(options =>
-    options.UseSqlServer(connectionString)
+    options.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
+    {
+      sqlOptions.EnableRetryOnFailure(
+          maxRetryCount: 10,
+          maxRetryDelay: TimeSpan.FromSeconds(10),
+          errorNumbersToAdd: null);
+    })
 );
 
 var key = builder.Configuration["JwtSettings:Key"];
@@ -48,7 +67,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
       };
     });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -92,7 +110,8 @@ using (var scope = app.Services.CreateScope())
   context.Database.Migrate();
 }
 
-// Configure the HTTP request pipeline.
+app.UseCors("MyPolicy");
+
 
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -86,12 +86,23 @@ public class UserController : ControllerBase
       logger.LogWarning($"Invalid JSON format: {jex.Message}");
       return BadRequest($"Invalid JSON format: {jex.Message}");
     }
+    catch (ApplicationException aex)
+    {
+      logger.LogWarning($"Error registering user: {aex.Message}");
+      return BadRequest(aex.Message);
+    }
+    catch (UnauthorizedAccessException uaex)
+    {
+      logger.LogWarning(uaex.Message);
+      return Unauthorized(uaex.Message);
+    }
     catch (Exception ex)
     {
       logger.LogError($"Error registering user: {ex.Message}");
-      return BadRequest(ex.Message);
+      return BadRequest($"Failed to register");
     }
   }
+
   [Authorize]
   [HttpPut("{userId}")]
   public IActionResult Update(int userId, [FromBody] UserCreateUpdateDTO userCreateUpdateDTO)

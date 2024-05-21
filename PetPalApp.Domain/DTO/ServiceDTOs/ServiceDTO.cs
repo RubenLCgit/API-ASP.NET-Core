@@ -11,6 +11,7 @@ public class ServiceDTO
   public DateTime ServiceAvailability { get; set; }
   public bool ServiceOnline { get; set; }
   public double ServiceRating { get; set; }
+  public string UserEmail { get; set; }
 
   public ServiceDTO() { }
 
@@ -25,5 +26,6 @@ public class ServiceDTO
     ServiceAvailability = service.ServiceAvailability;
     ServiceOnline = service.ServiceOnline;
     ServiceRating = service.ServiceRating;
+    UserEmail = service.UserEmail;
   }
 }

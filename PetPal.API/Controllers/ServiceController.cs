@@ -62,7 +62,7 @@ public class ServiceController : ControllerBase
     }
   }
 
-  [HttpGet("SearchAllServices")]
+  [HttpGet("search")]
   public ActionResult<List<ServiceDTO>> SearchAllServices(string searchedWord, string sortBy = "price", string sortOrder = "asc")
   {
     try
@@ -89,13 +89,20 @@ public class ServiceController : ControllerBase
   }
 
   [Authorize]
-  [HttpGet("SearchMyServices")]
-  public ActionResult<List<ServiceDTO>> SearchMyServices(string searchedWord, string sortBy = "Date", string sortOrder = "asc")
+  [HttpGet("{userId}/services")]
+  public ActionResult<List<ServiceDTO>> SearchMyServices(int userId ,string searchedWord, string sortBy = "Date", string sortOrder = "asc")
   {
+    var tokenId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var tokenRole = User.FindFirst(ClaimTypes.Role)?.Value;
+    if (userId != int.Parse(tokenId) && tokenRole != "Admin")
+    {
+      logger.LogWarning("Unauthorized access");
+      return Unauthorized("Unauthorized access");
+    }
     try
     {
       logger.LogInformation("Searching my services");
-      var services = serviceService.SearchMyServices(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, searchedWord, sortBy, sortOrder);
+      var services = serviceService.SearchMyServices(tokenId, searchedWord, sortBy, sortOrder);
       return Ok(services);
     }
     catch (KeyNotFoundException knfex)

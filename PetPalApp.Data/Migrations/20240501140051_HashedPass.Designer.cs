@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetPalApp.Data;
 
@@ -11,9 +12,11 @@ using PetPalApp.Data;
 namespace PetPalApp.Data.Migrations
 {
     [DbContext(typeof(PetPalAppContext))]
-    partial class PetPalAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240501140051_HashedPass")]
+    partial class HashedPass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,9 +60,6 @@ namespace PetPalApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserEmail")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -81,7 +81,6 @@ namespace PetPalApp.Data.Migrations
                             ProductRating = 4.5,
                             ProductStock = 10,
                             ProductType = "Food",
-                            UserEmail = "ruben@gmail.com.com",
                             UserId = 1
                         },
                         new
@@ -95,7 +94,6 @@ namespace PetPalApp.Data.Migrations
                             ProductRating = 4.7999999999999998,
                             ProductStock = 20,
                             ProductType = "Toy",
-                            UserEmail = "xio@gmail.com",
                             UserId = 2
                         },
                         new
@@ -109,7 +107,6 @@ namespace PetPalApp.Data.Migrations
                             ProductRating = 4.7000000000000002,
                             ProductStock = 30,
                             ProductType = "Accessory",
-                            UserEmail = "carlota@gmail.com",
                             UserId = 3
                         },
                         new
@@ -123,7 +120,6 @@ namespace PetPalApp.Data.Migrations
                             ProductRating = 4.9000000000000004,
                             ProductStock = 40,
                             ProductType = "Food",
-                            UserEmail = "alberto@gmail.com",
                             UserId = 4
                         },
                         new
@@ -137,7 +133,6 @@ namespace PetPalApp.Data.Migrations
                             ProductRating = 4.5999999999999996,
                             ProductStock = 50,
                             ProductType = "Grooming",
-                            UserEmail = "alejandro@gmail.com",
                             UserId = 5
                         });
                 });
@@ -174,9 +169,6 @@ namespace PetPalApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserEmail")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -197,7 +189,6 @@ namespace PetPalApp.Data.Migrations
                             ServicePrice = 50.0m,
                             ServiceRating = 4.5,
                             ServiceType = "Grooming",
-                            UserEmail = "ruben@gmail.com.com",
                             UserId = 1
                         },
                         new
@@ -210,7 +201,6 @@ namespace PetPalApp.Data.Migrations
                             ServicePrice = 200.0m,
                             ServiceRating = 4.7999999999999998,
                             ServiceType = "Training",
-                            UserEmail = "xio@gmail.com",
                             UserId = 2
                         },
                         new
@@ -223,7 +213,6 @@ namespace PetPalApp.Data.Migrations
                             ServicePrice = 30.0m,
                             ServiceRating = 4.7000000000000002,
                             ServiceType = "Sitting",
-                            UserEmail = "carlota@gmail.com",
                             UserId = 3
                         },
                         new
@@ -236,7 +225,6 @@ namespace PetPalApp.Data.Migrations
                             ServicePrice = 15.0m,
                             ServiceRating = 4.9000000000000004,
                             ServiceType = "Walking",
-                            UserEmail = "alejandro@gmail.com",
                             UserId = 4
                         });
                 });
@@ -284,7 +272,7 @@ namespace PetPalApp.Data.Migrations
                             UserId = 1,
                             UserEmail = "ruben@gmail.com.com",
                             UserName = "Ruben",
-                            UserPassword = "$2a$11$xycRJn0CdDY5peQPcNX/duZ3zQydv3HW5s16KPll8zf15g3DWvBJ2",
+                            UserPassword = "$2a$11$EBdVPnIKmER7a8iER0HER.TMJvzEgz1a6sR7.C0To5y8CdpVNsXOm",
                             UserRating = 0.0,
                             UserRegisterDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserRole = "Admin",
@@ -295,7 +283,7 @@ namespace PetPalApp.Data.Migrations
                             UserId = 2,
                             UserEmail = "xio@gmail.com",
                             UserName = "Xio",
-                            UserPassword = "$2a$11$Imc4jJ2ya.4iL9ejpxB4mOaK2drBl8u97OC/zNLHgHFWb1KtffDQK",
+                            UserPassword = "$2a$11$0mILplP1OlsR6ytNJOCUxeHQ69wTmuZH6ui/bjq5O5RfXMDLjZyWG",
                             UserRating = 0.0,
                             UserRegisterDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserRole = "Client",
@@ -306,7 +294,7 @@ namespace PetPalApp.Data.Migrations
                             UserId = 3,
                             UserEmail = "carlota@gmail.com",
                             UserName = "Carlota",
-                            UserPassword = "$2a$11$2dxdRZ1XvfeJxs6CA087Suj2zI17bPm1OTEGP4gCjTHWFV/5IRYje",
+                            UserPassword = "$2a$11$aB2J/hOZFLPyax8z0UeBU.0skT1JsSAxLkNi4pDW1eeYT.nZntLxS",
                             UserRating = 0.0,
                             UserRegisterDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserRole = "Client",
@@ -317,7 +305,7 @@ namespace PetPalApp.Data.Migrations
                             UserId = 4,
                             UserEmail = "alberto@gmail.com",
                             UserName = "Alberto",
-                            UserPassword = "$2a$11$FsT7bup.zMuCf7PcYQzC5eTN4.O9e54kQlX8JTVIhFYclEYzgNWSi",
+                            UserPassword = "$2a$11$n07m5xvEV6H72u08bXZlzenm0X8KcuRy4WNswHTqHA.gOTiNKlUMO",
                             UserRating = 0.0,
                             UserRegisterDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserRole = "Client",
@@ -328,7 +316,7 @@ namespace PetPalApp.Data.Migrations
                             UserId = 5,
                             UserEmail = "alejandro@gmail.com",
                             UserName = "Alejandro",
-                            UserPassword = "$2a$11$d0SDw/zmYckhnlssxew76.OQWW1S25JFsIp5dLsYEgMEQIJo7inHW",
+                            UserPassword = "$2a$11$AZtyECLMZcZcmxMCt.7boOjsZQL8xBkJtSbyKRQknuBGRsDAJ7/Ca",
                             UserRating = 0.0,
                             UserRegisterDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserRole = "Client",

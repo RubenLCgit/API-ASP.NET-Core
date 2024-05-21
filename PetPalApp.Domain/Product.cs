@@ -24,11 +24,12 @@ public class Product
   [Required]
   public int ProductStock{ get; set; }
   public double ProductRating { get; set; }
+  public string UserEmail { get; set; }
 
 
   public Product() { }
 
-  public Product(int userId,String type, String name, String description, decimal price, bool online, int stock)
+  public Product(int userId,String type, String name, String description, decimal price, bool online, int stock, string email)
   {
     UserId = userId;
     ProductType = type;
@@ -38,5 +39,6 @@ public class Product
     ProductOnline = online;
     ProductStock = stock;
     ProductAvailability = DateTime.Now;
+    UserEmail = email;
   }
 }

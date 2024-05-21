@@ -28,7 +28,9 @@ public class UserEFRepository : IRepositoryGeneric<User>
   {
     try
     {
-      _context.Users.Remove(user);
+      var userToDelete = _context.Users.Include(u => u.ListServices).Include(u => u.ListProducts).FirstOrDefault(u => u.UserId == user.UserId);
+      if (userToDelete == null) throw new KeyNotFoundException("User not found.");
+      _context.Users.Remove(userToDelete);
       _context.SaveChanges();
     }
     catch (DbUpdateException ex)
@@ -40,7 +42,7 @@ public class UserEFRepository : IRepositoryGeneric<User>
   {
     try
     {
-      return _context.Users.ToList();
+      return _context.Users.Include(u => u.ListServices).Include(u => u.ListProducts).ToList();
     }
     catch (Exception ex)
     {
@@ -51,7 +53,7 @@ public class UserEFRepository : IRepositoryGeneric<User>
   {
     try 
     {
-      return _context.Users.FirstOrDefault(user => user.UserId == userId);
+      return _context.Users.Include(u => u.ListServices).Include(u => u.ListProducts).FirstOrDefault(u => u.UserId == userId);
     }
     catch (Exception ex)
     {
