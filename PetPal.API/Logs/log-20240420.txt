@@ -1,4 +1,0 @@
-2024-04-20 10:54:10.258 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
-2024-04-20 10:54:44.303 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
-2024-04-20 10:59:34.775 +02:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
-2024-04-20 11:14:35.717 +02:00 [INF] Getting all products
