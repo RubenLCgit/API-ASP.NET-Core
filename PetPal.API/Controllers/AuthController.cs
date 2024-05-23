@@ -18,9 +18,9 @@ public class AuthController : ControllerBase
   private readonly IUserService userService;
   private readonly IConfiguration configuration;
 
-  private readonly ILogger<UserController> logger;
+  private readonly ILogger<AuthController> logger;
 
-  public AuthController(IUserService _userService ,IConfiguration _configuration, ILogger<UserController> _logger)
+  public AuthController(IUserService _userService ,IConfiguration _configuration, ILogger<AuthController> _logger)
   {
     userService = _userService;
     configuration = _configuration;

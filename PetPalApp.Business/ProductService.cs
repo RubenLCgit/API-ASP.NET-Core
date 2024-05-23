@@ -117,6 +117,7 @@ public class ProductService : IProductService
   {
     var allproducts = Prepository.GetAllEntities();
     var query = allproducts.Where(x => x.UserId == int.Parse(tokenId)).ToList().AsQueryable();
+    if (!string.IsNullOrWhiteSpace(searchedWord))
     {
       query = query.Where(x => x.ProductName.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.ProductDescription.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.ProductType.Contains(searchedWord, StringComparison.OrdinalIgnoreCase));
     }

@@ -116,6 +116,7 @@ public class ServiceService : IServiceService
   {
     var allServices = Srepository.GetAllEntities().ToList().AsQueryable();
     var query = allServices.Where(x => x.UserId == int.Parse(tokenId));
+    if (!string.IsNullOrEmpty(searchedWord))
     {
       query = query.Where(x => x.ServiceName.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.ServiceDescription.Contains(searchedWord, StringComparison.OrdinalIgnoreCase) || x.ServiceType.Contains(searchedWord, StringComparison.OrdinalIgnoreCase));
     }
